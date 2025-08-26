@@ -7,834 +7,736 @@
     <title>Queendom AI Image Generator</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --dark-bg: #0d001a; /* Even deeper, space-like purple */
-            --container-bg: #1c0033; /* Darker purple for main elements */
-            --accent-color: #8a2be2; /* BlueViolet - core glow */
-            --secondary-accent: #00ffff; /* Cyan - for highlights, futuristic feel */
-            --text-color: #e0e0e0; /* Light gray for general text */
-            --highlight-text: #b39bfa; /* Lighter purple/blue for descriptions */
-            --success-color: #4CAF50; /* Green for success */
-            --error-color: #ff6b6b; /* Red for errors */
-            --border-color: #5a2e8c; /* Purple border */
-            --button-hover: #a052f5; /* Lighter purple on hover */
-            --tab-active-bg: #3d0066; /* Background for active tab/sidebar item */
-            --tab-inactive-bg: #2d004d; /* Background for inactive tabs */
-            --tab-border-active: #00ffff; /* Cyan border for active tabs */
-            --card-glow: 0 0 15px var(--secondary-accent), 0 0 25px var(--accent-color); /* Intense card glow */
-            --text-shadow-glow: 0 0 8px rgba(138, 43, 226, 0.7), 0 0 15px rgba(0, 255, 255, 0.5);
-        }
+        /* Base Styles - Mobile-First */
+       :root {
+    /* NETFLIX-INSPIRED COLOR PALETTE */
+    --bg-color: #141414; /* Main background: Deep charcoal black (Netflix's signature background) */
+    --container-bg: #1F1F1F; /* Slightly lighter dark grey for content containers */
+    --primary-color: #E50914; /* The iconic Netflix Red */
+    --secondary-color: #F03A47; /* A brighter, more vibrant red for accents/hovers */
+    --text-color: #FFFFFF; /* Pure white for main text, clear and sharp */
+    --subtle-text-color: #A0A0A0; /* Soft grey for secondary text, descriptions, etc. */
+    --border-color: #303030; /* Subtle dark border for separation */
+    --card-bg: #282828; /* Dark grey for cards, buttons, input backgrounds */
+    --shadow-color: rgba(0, 0, 0, 0.7); /* Deep, soft shadow for depth */
 
-        body {
-            font-family: 'Montserrat', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, var(--dark-bg) 0%, #05000a 100%); /* Deep gradient background */
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
-            overflow-y: auto; /* Allow scrolling for content */
-        }
-        .container {
-            background-color: var(--container-bg);
-            padding: 30px 20px;
-            border-radius: 20px; /* More pronounced rounding */
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 50px rgba(138, 43, 226, 0.5); /* Stronger, glowing shadow */
-            width: 100%;
-            max-width: 650px; /* Slightly wider container */
-            box-sizing: border-box;
-            text-align: center;
-            border: 2px solid var(--border-color); /* More prominent border */
-            position: relative;
-            z-index: 1; /* Ensure container is above potential background effects */
-        }
-        h1 {
-            font-family: 'Orbitron', sans-serif; /* Futuristic font for heading */
-            color: var(--secondary-accent); /* Cyan heading */
-            margin-bottom: 25px;
-            font-size: 2.8em; /* Larger, more impactful heading */
-            text-shadow: var(--text-shadow-glow); /* Text glow */
-            letter-spacing: 2px;
-        }
-        p {
-            margin-bottom: 20px;
-            color: var(--highlight-text);
-            font-size: 1em;
-            line-height: 1.5;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 700; /* Even bolder label */
-            color: var(--secondary-accent); /* Cyan labels */
-            text-align: left;
-            font-size: 0.95em;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
-        }
-        textarea, select {
-            width: calc(100% - 20px);
-            padding: 14px; /* More padding */
-            margin-bottom: 22px; /* More space */
-            border: 1px solid var(--border-color);
-            border-radius: 10px; /* More rounded inputs */
-            box-sizing: border-box;
-            background-color: #250040; /* Darker input background */
-            color: var(--text-color);
-            font-size: 1.05em;
-            resize: vertical;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
-        }
-        textarea:focus, select:focus {
-            border-color: var(--secondary-accent); /* Cyan on focus */
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.6), inset 0 2px 8px rgba(0, 0, 0, 0.6); /* Cyan glow on focus */
-            background-color: #2f0050; /* Slightly lighter on focus */
-            outline: none;
-        }
-        select {
-            height: 50px; /* Consistent height for select */
-            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300ffff%22%20d%3D%22M287%2C197.6c-3.1%2C3.1-6.5%2C4.7-10.9%2C4.7s-7.8-1.6-10.9-4.7L146.2%2C98.4L26.2%2C197.6c-3.1%2C3.1-6.5%2C4.7-10.9%2C4.7s-7.8-1.6-10.9-4.7c-6.2-6.2-6.2-16.4%2C0-22.6L135.3%2C65.8c6.2-6.2%2C16.4-6.2%2C22.6%2C0l116.8%2C109.2C293.2%2C181.2%2C293.2%2C191.4%2C287%2C197.6z%22%2F%3E%3C%2Fsvg%3E'); /* Cyan arrow */
-            background-repeat: no-repeat;
-            background-position: right 15px top 50%;
-            background-size: 16px 16px;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-        }
+    /* UI ELEMENTS & SIZING */
+    --border-radius-soft: 6px; /* Slightly sharper, modern border-radius */
+    --padding-base: 18px; /* Generous base padding for comfortable spacing */
 
-        button {
-            background: linear-gradient(45deg, var(--accent-color), var(--secondary-accent)); /* Mixed gradient button */
-            color: white;
-            padding: 16px 35px; /* Larger, more prominent button */
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1.3em;
-            font-weight: 700;
-            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 30px rgba(138, 43, 226, 0.7); /* Stronger glow */
-            letter-spacing: 1px;
-            width: 100%;
-            margin-top: 20px;
-            text-transform: uppercase;
-        }
-        button:hover {
-            background: linear-gradient(45deg, var(--secondary-accent), var(--accent-color)); /* Inverted gradient on hover */
-            transform: translateY(-3px) scale(1.01); /* More pronounced lift */
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8), 0 0 40px var(--secondary-accent); /* Enhanced hover glow */
-        }
-        button:active {
-            transform: translateY(0);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-        }
+    /* RGB values for rgba() functions (essential for glows and transparencies) */
+    --primary-color-rgb: 229, 9, 20;
+    --secondary-color-rgb: 240, 58, 71;
+}
 
-        #loading {
-            margin-top: 25px;
-            font-style: italic;
-            color: var(--secondary-accent);
-            display: none;
-            font-size: 1.2em;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-        }
-        #error-message {
-            margin-top: 25px;
-            color: var(--error-color);
-            font-weight: bold;
-            display: none;
-            font-size: 1.1em;
-            background-color: rgba(255, 107, 107, 0.15);
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--error-color);
-            box-shadow: 0 0 15px rgba(255, 107, 107, 0.4);
-        }
-        #imageContainer {
-            margin-top: 40px;
-            border: 3px dashed var(--secondary-accent); /* Cyan dashed border */
-            padding: 25px;
-            border-radius: 15px;
-            min-height: 200px; /* Taller placeholder */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            background-color: #150029; /* Darker background for image area */
-            box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.2), 0 0 30px rgba(138, 43, 226, 0.3);
-        }
-        #imageContainer img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7), 0 0 25px var(--secondary-accent); /* Image glow */
-            margin-bottom: 18px;
-        }
-        #imageContainer p {
-            color: #aaa;
-            font-size: 1em;
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
-        }
-        #textResponse {
-            margin-top: 30px;
-            text-align: left;
-            padding: 20px;
-            background-color: #250040;
-            border-radius: 10px;
-            font-size: 1em;
-            border: 1px solid var(--border-color);
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-        }
-        .small-text {
-            font-size: 0.85em;
-            color: #888;
-            margin-top: 35px;
-            line-height: 1.4;
-        }
-        #watermarkCanvas {
-            display: none; 
-        }
+/* GENERAL STYLES */
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    min-height: 100vh;
+}
 
-        /* Showcase Images (Cards) - Insane Design */
-        .showcase-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); /* Slightly larger cards */
-            gap: 18px; /* Increased gap */
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #150029; /* Darker background */
-            border-radius: 15px;
-            border: 2px solid var(--accent-color); /* Purple border */
-            box-shadow: inset 0 0 20px rgba(138, 43, 226, 0.2), var(--card-glow); /* Intense container glow */
-        }
-        .showcase-card {
-            background-color: #2d004d; /* Card background */
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid var(--secondary-accent); /* Cyan border for cards */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6), 0 0 10px rgba(0, 255, 255, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            position: relative;
-            cursor: pointer;
-        }
-        .showcase-card::before { /* Glitch effect / overlay */
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, rgba(0,255,255,0.1) 0%, rgba(138,43,226,0.1) 100%);
-            mix-blend-mode: overlay;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-        .showcase-card:hover::before {
-            opacity: 1;
-        }
-        .showcase-card img {
-            width: 100%;
-            height: 120px; /* Fixed height for showcase images */
-            object-fit: cover;
-            border-radius: 0; /* No rounding inside card */
-            display: block;
-            transition: transform 0.3s ease;
-            box-shadow: none; /* No extra shadow on inner image */
-            margin-bottom: 0;
-        }
-        .showcase-card:hover {
-            transform: scale(1.08) rotateZ(1deg); /* Slight rotation on hover */
-            border-color: var(--button-hover);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8), var(--card-glow); /* Enhanced glow on hover */
-            z-index: 10; /* Bring to front on hover */
-        }
-        .showcase-card:hover img {
-            transform: scale(1.1); /* Zoom image on hover */
-        }
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Netflix Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Netflix's preferred font stack */
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased; /* Smoother font rendering */
+    -moz-osx-font-smoothing: grayscale;
+}
 
-        /* --- Prompt Reference Section Styles --- */
-        .prompt-reference-section {
-            background-color: var(--tab-inactive-bg);
-            border-radius: 15px;
-            padding: 25px 20px;
-            margin-bottom: 35px;
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5), 0 0 20px rgba(138, 43, 226, 0.2);
-            border: 1px solid var(--border-color);
-            text-align: left;
-        }
-        .prompt-reference-section h2 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8em;
-            color: var(--secondary-accent);
-            margin-top: 0;
-            margin-bottom: 25px;
-            text-align: center;
-            text-shadow: var(--text-shadow-glow);
-            letter-spacing: 1px;
-        }
+.container {
+    width: calc(100% - (var(--padding-base) * 2));
+    max-width: 960px; /* Slightly wider for a more immersive feel */
+    margin: 25px auto; /* More margin top/bottom */
+    padding: var(--padding-base);
+    background-color: var(--container-bg);
+    border-radius: var(--border-radius-soft);
+    box-shadow: 0 10px 30px var(--shadow-color); /* Deeper shadow */
+    position: relative;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+}
 
-        .prompt-tabs {
-            display: flex;
-            justify-content: space-around;
-            background-color: #250040; /* Darker for tabs container */
-            border-radius: 10px;
-            padding: 6px;
-            margin-bottom: 25px;
-            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.4);
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            white-space: nowrap;
-            border: 1px solid var(--border-color);
-        }
-        .tab-item {
-            flex: 1;
-            text-align: center;
-            padding: 12px 8px;
-            cursor: pointer;
-            color: var(--text-color);
-            font-weight: 600;
-            border-radius: 8px;
-            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-            font-size: 0.9em;
-            margin: 0 3px;
-            text-transform: uppercase;
-        }
-        .tab-item:hover {
-            background-color: var(--tab-inactive-bg);
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
-            color: var(--secondary-accent);
-            transform: translateY(-2px);
-        }
-        .tab-item.active {
-            background-color: var(--tab-active-bg);
-            color: var(--secondary-accent);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 10px rgba(0, 0, 0, 0.6); /* Intense cyan glow */
-            border: 1px solid var(--tab-border-active);
-            transform: translateY(-1px);
-        }
+/* TYPOGRAPHY */
+h1 {
+    font-family: 'Netflix Sans', 'Arial Black', sans-serif; /* Stronger font for main title */
+    text-align: center;
+    color: var(--primary-color);
+    font-size: clamp(2.5em, 7vw + 0.8em, 3.5em); /* Larger, more dominant title */
+    margin-bottom: 0.7em;
+    text-shadow: 0 0 20px rgba(var(--primary-color-rgb), 0.7); /* Intense Netflix Red glow */
+    letter-spacing: 0.1em; /* Pronounced letter spacing */
+    word-break: break-word;
+}
 
-        .tab-content {
-            display: none; /* Hidden by default */
-        }
-        .tab-content.active {
-            display: flex; /* Display as flex for sidebar and main content */
-            flex-direction: column; /* Stack sidebar and main content on mobile */
-            border: 1px solid var(--container-bg); /* Subtle border for content area */
-            border-radius: 10px;
-            padding: 10px 0;
-        }
+h2 {
+    color: var(--text-color);
+    font-size: 1.8em;
+    margin-top: 40px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    text-align: left;
+    letter-spacing: 0.05em;
+}
 
-        .sidebar {
-            background-color: var(--dark-bg);
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 18px;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
-            flex-shrink: 0;
-            border: 1px solid var(--border-color);
-        }
-        .sidebar-item {
-            padding: 12px 18px;
-            cursor: pointer;
-            color: var(--text-color);
-            border-radius: 7px;
-            margin-bottom: 6px;
-            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
-            text-align: left;
-            font-size: 0.9em;
-            text-transform: uppercase;
-        }
-        .sidebar-item:last-child {
-            margin-bottom: 0;
-        }
-        .sidebar-item:hover {
-            background-color: #3d0066; /* Darker purple on hover */
-            color: var(--secondary-accent);
-            transform: translateX(3px);
-        }
-        .sidebar-item.active {
-            background-color: var(--tab-active-bg);
-            color: var(--secondary-accent);
-            font-weight: 700;
-            box-shadow: inset 0 0 12px rgba(0, 255, 255, 0.4), 0 0 10px rgba(138, 43, 226, 0.3);
-            border: 1px solid var(--tab-border-active);
-            transform: translateX(0);
-        }
+h3 {
+    color: var(--text-color);
+    font-size: 1.4em;
+    margin-top: 30px;
+    margin-bottom: 18px;
+    text-align: left;
+    letter-spacing: 0.03em;
+}
 
-        .selectors-grid {
-            flex-grow: 1;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(95px, 1fr)); /* Adjusted for text-only items */
-            gap: 15px;
-            padding: 15px;
-            background-color: var(--tab-inactive-bg);
-            border-radius: 10px;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
-            justify-content: center;
-            border: 1px solid var(--border-color);
-        }
-        .selector-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-            padding: 10px 5px; /* More padding for text items */
-            border-radius: 8px;
-            min-height: 50px; /* Reduced min-height for text items */
-            justify-content: center;
-            background-color: #250040; /* Item background */
-            border: 1px solid rgba(138, 43, 226, 0.4);
-        }
-        .selector-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 18px rgba(0, 255, 255, 0.5); /* Cyan glow on hover */
-            background-color: #3d0066;
-            border-color: var(--secondary-accent);
-        }
-        .selector-item span {
-            font-size: 0.85em;
-            color: var(--highlight-text);
-            font-weight: 600;
-            white-space: normal;
-            text-align: center;
-            line-height: 1.3;
-            text-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
-        }
+h4 {
+    color: var(--text-color);
+    font-size: 1.2em;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    text-align: left;
+}
 
-        /* Settings button */
-        #settingsBtn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: transparent;
-            border: none;
-            color: var(--highlight-text);
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: color 0.3s ease, background-color 0.3s ease, text-shadow 0.3s ease;
-            width: auto;
-            padding: 8px 15px;
-            margin: 0;
-            border-radius: 8px;
-            text-shadow: 0 0 8px rgba(138, 43, 226, 0.7);
-            border: 1px solid rgba(138, 43, 226, 0.5);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        #settingsBtn:hover {
-            color: var(--secondary-accent);
-            transform: translateY(-1px);
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
-            background-color: rgba(0, 255, 255, 0.05);
-            text-shadow: 0 0 10px var(--secondary-accent);
-            border-color: var(--secondary-accent);
-        }
+p {
+    text-align: left;
+    color: var(--subtle-text-color);
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.05em; /* Slightly larger base paragraph font */
+}
 
-        /* Modal Styles */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
+/* FORM ELEMENTS */
+label {
+    display: block;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 1.1em;
+    text-align: left;
+}
 
-        .modal-content {
-            background-color: var(--container-bg);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 15px 60px rgba(0, 0, 0, 0.9), 0 0 60px rgba(138, 43, 226, 0.6);
-            width: 90%;
-            max-width: 550px;
-            position: relative;
-            animation: fadeIn 0.4s ease-out;
-            border: 2px solid var(--secondary-accent);
-            text-align: left;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+select, textarea {
+    width: 100%;
+    padding: 16px;
+    border-radius: var(--border-radius-soft);
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    font-family: 'Netflix Sans', sans-serif;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+    font-size: 1em;
+    resize: vertical;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
 
-        .modal-content h3 {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--accent-color);
-            margin-top: 0;
-            margin-bottom: 30px;
-            font-size: 2em;
-            text-align: center;
-            text-shadow: var(--text-shadow-glow);
-        }
+select:focus, textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 18px rgba(var(--primary-color-rgb), 0.8); /* Intense Red focus glow */
+}
 
-        .modal-content .close-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            color: var(--secondary-accent);
-            font-size: 2em;
-            cursor: pointer;
-            transition: color 0.3s ease, transform 0.2s ease;
-        }
-        .modal-content .close-button:hover {
-            color: var(--error-color);
-            transform: rotate(90deg);
-        }
+/* BUTTONS */
+button {
+    background: linear-gradient(135deg, var(--primary-color), #B00710); /* Deep Netflix Red gradient */
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius-soft);
+    padding: 18px 32px;
+    font-size: 1.15em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+    margin-top: 20px;
+    width: 100%;
+    text-transform: uppercase;
+    letter-spacing: 0.12em; /* Bold letter spacing */
+    box-shadow: 0 8px 25px var(--shadow-color); /* Prominent shadow */
+    touch-action: manipulation;
+}
 
-        .modal-content label {
-            margin-top: 18px;
-            margin-bottom: 7px;
-            color: var(--highlight-text);
-            font-weight: 600;
-        }
+button:hover {
+    transform: translateY(-5px); /* More noticeable lift */
+    box-shadow: 0 12px 30px rgba(var(--primary-color-rgb), 0.8); /* Stronger Red shadow */
+    background: linear-gradient(135deg, #FF1A2A, var(--primary-color)); /* Brighter Red on hover */
+}
 
-        .modal-content input[type="radio"] {
-            margin-right: 10px;
-            accent-color: var(--secondary-accent);
-            transform: scale(1.2);
-            vertical-align: middle;
-        }
+#generateBtn {
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, var(--secondary-color), #C8202F); /* Use secondary red for generate */
+}
 
-        .modal-content .radio-group {
-            margin-bottom: 15px;
-            background-color: #250040;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
-        }
-        .modal-content .radio-group label {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            margin-bottom: 10px;
-            font-size: 1.05em;
-            transition: color 0.3s ease;
-        }
-        .modal-content .radio-group label:hover {
-            color: var(--secondary-accent);
-        }
-        .modal-content .radio-group label:last-child {
-            margin-bottom: 0;
-        }
+#generateBtn:hover {
+    box-shadow: 0 12px 30px rgba(var(--secondary-color-rgb), 0.8);
+    background: linear-gradient(135deg, #FF4D5E, var(--secondary-color));
+}
 
-        .modal-content .current-settings {
-            background-color: #250040;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 25px;
-            border: 1px solid var(--secondary-accent);
-            font-size: 0.95em;
-            box-shadow: inset 0 0 15px rgba(0, 255, 255, 0.1);
-        }
-        .modal-content .current-settings p {
-            margin: 8px 0;
-            color: var(--highlight-text);
-            font-size: 0.95em;
-        }
-        .modal-content .current-settings strong {
-            color: var(--text-color);
-            text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
-        }
+#settingsBtn {
+    position: absolute;
+    top: var(--padding-base);
+    right: var(--padding-base);
+    width: auto;
+    padding: 12px 20px;
+    font-size: 0.95em;
+    margin-top: 0;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--subtle-text-color);
+    box-shadow: none;
+    text-transform: none;
+    letter-spacing: normal;
+    z-index: 10;
+}
+
+#settingsBtn:hover {
+    transform: none;
+    box-shadow: 0 0 15px rgba(var(--primary-color-rgb), 0.6);
+    background-color: #444444; /* Darker grey hover */
+    color: var(--primary-color);
+}
+
+#downloadBtn {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--subtle-text-color);
+}
+
+#downloadBtn:hover {
+    background-color: #444444;
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    box-shadow: 0 10px 25px rgba(var(--primary-color-rgb), 0.4);
+}
+
+
+/* PROMPT REFERENCE SECTION */
+.prompt-reference-section {
+    background-color: var(--card-bg);
+    padding: var(--padding-base);
+    border-radius: var(--border-radius-soft);
+    margin-bottom: 35px;
+    border: 1px solid var(--border-color);
+    box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.5); /* Stronger inner shadow */
+}
+
+.prompt-tabs {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    margin-bottom: 25px;
+    border-bottom: 2px solid var(--border-color);
+    gap: 15px;
+    padding-bottom: 10px;
+    white-space: nowrap;
+    scrollbar-width: none;
+}
+.prompt-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-item {
+    flex-shrink: 0;
+    padding: 15px 22px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--subtle-text-color);
+    transition: color 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+    border-bottom: 2px solid transparent;
+    border-radius: 6px 6px 0 0;
+    font-size: 1.05em;
+}
+
+.tab-item.active {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    background-color: var(--container-bg); /* Match container bg for active tab */
+}
+
+.tab-item:hover:not(.active) {
+    color: var(--text-color);
+    background-color: rgba(var(--primary-color-rgb), 0.15); /* Subtle red hover */
+}
+
+.tab-content-area {
+    background-color: #2D2D2D; /* Slightly lighter dark for content area */
+    padding: var(--padding-base);
+    border-radius: var(--border-radius-soft);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    gap: 15px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    justify-content: flex-start;
+    width: 100%;
+    box-sizing: border-box;
+    scrollbar-width: none;
+}
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+.sidebar-item {
+    flex-shrink: 0;
+    padding: 14px 20px;
+    cursor: pointer;
+    border-radius: var(--border-radius-soft);
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    color: var(--subtle-text-color);
+    background-color: #444444; /* Darker grey for sidebar items */
+    white-space: nowrap;
+    font-size: 1em;
+}
+
+.sidebar-item:hover, .sidebar-item.active {
+    background-color: var(--primary-color);
+    color: #fff;
+    box-shadow: 0 5px 15px rgba(var(--primary-color-rgb), 0.6); /* Red glow on active/hover */
+}
+
+.selectors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); /* Larger grid items */
+    gap: 18px;
+    flex-grow: 1;
+    width: 100%;
+}
+
+.selector-item {
+    background-color: var(--card-bg);
+    padding: 16px;
+    border-radius: var(--border-radius-soft);
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 1em;
+    color: var(--text-color);
+}
+
+.selector-item:hover, .selector-item.selected {
+    border-color: var(--secondary-color); /* Highlight with secondary red */
+    background-color: rgba(var(--secondary-color-rgb), 0.2);
+    color: var(--secondary-color);
+    box-shadow: 0 0 15px rgba(var(--secondary-color-rgb), 0.6); /* Vibrant red glow */
+}
+
+/* COMMON NEGATIVE PROMPTS SECTION - ADVANCED */
+.common-negative-prompts {
+    margin-top: 40px;
+    background-color: var(--card-bg);
+    padding: var(--padding-base);
+    border-radius: var(--border-radius-soft);
+    border: 1px solid var(--border-color);
+    box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.5);
+}
+
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-top: 25px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    background-color: #444444; /* Consistent with sidebar items */
+    padding: 16px;
+    border-radius: var(--border-radius-soft);
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid transparent;
+    min-height: 52px; /* Taller for better touch target */
+}
+
+.checkbox-item input[type="checkbox"] {
+    margin-right: 18px;
+    accent-color: var(--primary-color); /* Netflix Red accent */
+    transform: scale(1.5); /* Larger checkbox */
+    min-width: 30px;
+    min-height: 30px;
+}
+
+.checkbox-item label {
+    margin: 0;
+    color: var(--text-color);
+    font-weight: 400;
+    cursor: pointer;
+    font-size: 1.05em;
+}
+
+.checkbox-item:hover {
+    background-color: #555555; /* Lighter grey on hover */
+    border-color: var(--primary-color);
+    box-shadow: 0 0 12px rgba(var(--primary-color-rgb), 0.5);
+}
+
+/* IMAGE DISPLAY & SHOWCASE */
+#imageContainer {
+    margin-top: 45px;
+    text-align: center;
+}
+
+#generatedImageWrapper img, #showcaseImage {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--border-radius-soft);
+    box-shadow: 0 15px 40px var(--shadow-color);
+    transition: transform 0.5s ease;
+    border: 3px solid var(--border-color); /* Thicker border */
+}
+
+#generatedImageWrapper img:hover {
+    transform: scale(1.04); /* More pronounced hover effect */
+}
+
+.showcase-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Larger cards */
+    gap: 25px;
+    margin-top: 45px;
+}
+
+.showcase-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--border-radius-soft);
+    box-shadow: 0 8px 20px var(--shadow-color);
+    transition: transform 0.3s ease;
+    border: 2px solid var(--border-color);
+}
+
+.showcase-card:hover {
+    transform: translateY(-10px); /* Significant lift */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.9); /* Stronger shadow on hover */
+}
+
+.showcase-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.showcase-card img:hover {
+    transform: scale(1.2); /* Even more zoom on hover */
+}
+
+/* MODALS - FULLY NETFLIX-STYLE WITH SCROLLING */
+.modal-overlay, .tab-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.98); /* Near-black, fully opaque background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    overflow-y: auto; /* Allow scrolling for the entire modal overlay */
+    padding: 25px; /* Ample padding */
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
+}
+
+.modal-overlay.active, .tab-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.modal-content, .tab-modal-content {
+    background-color: var(--container-bg);
+    padding: 35px; /* More padding inside modal */
+    border-radius: var(--border-radius-soft);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.98); /* Extremely deep shadow */
+    width: 95%;
+    max-width: 850px; /* Wider modal */
+    max-height: calc(100vh - 50px); /* Limit modal height (viewport height - total overlay padding) */
+    position: relative;
+    border: 1px solid var(--border-color);
+    transform: translateY(-50px); /* Deeper initial drop */
+    opacity: 0;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    box-sizing: border-box;
+    overflow-y: auto; /* Allow scrolling *within* the modal content */
+    -webkit-overflow-scrolling: touch;
+}
+
+.modal-overlay.active .modal-content,
+.tab-modal-overlay.active .tab-modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--subtle-text-color);
+    font-size: 3em; /* Very large close button */
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.2s ease;
+    z-index: 1001;
+    padding: 0;
+    line-height: 1;
+}
+
+.close-button:hover {
+    color: var(--primary-color);
+    transform: scale(1.15); /* More intense hover effect */
+}
+
+/* OTHER UI ELEMENTS (CONTINUED) */
+.feature-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.feature-buttons button {
+    flex: 1;
+    padding: 16px 25px;
+    font-size: 1em;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--subtle-text-color);
+    box-shadow: none;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.feature-buttons button:hover {
+    transform: none;
+    background-color: #444444;
+    color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(var(--primary-color-rgb), 0.5);
+}
+
+#loading, #error-message {
+    text-align: center;
+    margin-top: 35px;
+    font-weight: bold;
+    padding: 18px;
+    border-radius: var(--border-radius-soft);
+    font-size: 1.1em;
+    letter-spacing: 0.04em;
+    display: none;
+}
+
+#loading {
+    color: var(--secondary-color);
+    background-color: rgba(var(--secondary-color-rgb), 0.2);
+    border: 1px solid var(--secondary-color);
+}
+
+#error-message {
+    color: #FF6666; /* Clearer error red */
+    background-color: rgba(255, 102, 102, 0.2);
+    border: 1px solid #FF6666;
+}
+
+#promptHistoryContainer {
+    margin-top: 45px;
+    background-color: var(--card-bg);
+    padding: var(--padding-base);
+    border-radius: var(--border-radius-soft);
+    border: 1px solid var(--border-color);
+    box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.5);
+    display: none;
+}
+
+#promptHistoryList {
+    list-style-type: none;
+    padding: 0;
+    max-height: 320px; /* Taller history list */
+    overflow-y: auto;
+    padding-right: 12px;
+}
+
+#promptHistoryList li {
+    background-color: #444444;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.2s ease, border-color 0.3s ease;
+    font-size: 1.05em;
+    color: var(--subtle-text-color);
+    border: 1px solid transparent;
+    text-align: left;
+}
+
+#promptHistoryList li:hover {
+    background-color: #555555;
+    box-shadow: 0 0 15px rgba(var(--primary-color-rgb), 0.5);
+    border-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+.current-settings {
+    margin-top: 30px;
+    background-color: #2D2D2D;
+    padding: var(--padding-base);
+    border-radius: var(--border-radius-soft);
+    border: 1px solid var(--border-color);
+}
+
+.current-settings p {
+    text-align: left;
+    margin-bottom: 12px;
+    color: var(--subtle-text-color);
+    font-size: 1em;
+    line-height: 1.6;
+}
+
+.current-settings strong {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    margin-top: 18px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    text-align: left;
+    font-size: 1.05em;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 18px;
+    accent-color: var(--primary-color);
+    transform: scale(1.5);
+    min-width: 30px;
+    min-height: 30px;
+}
+
+.modal-save-btn {
+    margin-top: 40px;
+    background: linear-gradient(135deg, var(--primary-color), #B00710);
+    box-shadow: 0 8px 25px var(--shadow-color);
+}
+.modal-save-btn:hover {
+    background: linear-gradient(135deg, #FF1A2A, var(--primary-color));
+    box-shadow: 0 12px 30px rgba(var(--primary-color-rgb), 0.8);
+}
+
+/* SCROLLBAR STYLING FOR NETFLIX THEME */
+::-webkit-scrollbar {
+  width: 12px; /* Wider scrollbar */
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1C1C1C; /* Blends with deep background */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #505050; /* Dark grey thumb */
+  border-radius: 10px;
+  border: 2px solid #1C1C1C; /* Adds depth */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color); /* Netflix Red on hover */
+  border-color: var(--primary-color);
+}
+
+/* For Firefox */
+html {
+  scrollbar-color: #505050 #1C1C1C; /* thumb track */
+  scrollbar-width: thin;
+}
+
+/* CUSTOM ALIGNMENT IN MODALS */
+.modal-content h3, .tab-modal-content h3 {
+    text-align: center;
+    padding-top: 15px;
+    margin-bottom: 25px;
+    color: var(--primary-color); /* Modal headings also Netflix Red */
+    text-shadow: 0 0 10px rgba(var(--primary-color-rgb), 0.5);
+}
+.modal-content p, .tab-modal-content p,
+.whats-new-content p, .whats-new-content ul {
+    text-align: left;
+    margin-bottom: 18px;
+}
+.whats-new-content ul {
+    list-style: disc outside;
+    padding-left: 30px; /* More indent */
+}
+.whats-new-content ul li {
+    margin-bottom: 10px;
+    color: var(--subtle-text-color);
+    font-size: 1em;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (min-width: 768px) {
+    .feature-buttons {
+        flex-direction: row;
+    }
+
+    .checkbox-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .prompt-tabs {
+        justify-content: center;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container {
+        max-width: 1000px; /* Even wider for very large screens */
+    }
+    .selectors-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Larger grid items on wider screens */
+    }
+    h1 {
+        font-size: 4em; /* Even larger main title */
+    }
+}
         
-        .modal-content .modal-save-btn {
-            margin-top: 30px;
-            background: linear-gradient(45deg, #28a745, #218838); /* Green gradient */
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 25px rgba(40, 167, 69, 0.7);
-        }
-        .modal-content .modal-save-btn:hover {
-            background: linear-gradient(45deg, #218838, #1e7e34);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8), 0 0 40px rgba(40, 167, 69, 0.9);
-        }
-
-        /* Common Negative Prompts Section */
-        .common-negative-prompts {
-            background-color: var(--tab-inactive-bg);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 25px;
-            margin-bottom: 25px;
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border-color);
-            text-align: left;
-        }
-        .common-negative-prompts h3 {
-            font-size: 1.4em;
-            color: var(--secondary-accent);
-            margin-top: 0;
-            margin-bottom: 20px;
-            text-align: center;
-            text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
-        }
-        .common-negative-prompts .checkbox-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Larger grid items */
-            gap: 12px;
-        }
-        .common-negative-prompts .checkbox-item {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            padding: 8px 10px;
-            background-color: #250040;
-            border-radius: 8px;
-            border: 1px solid rgba(138, 43, 226, 0.4);
-            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        .common-negative-prompts .checkbox-item:hover {
-            background-color: #3d0066;
-            border-color: var(--secondary-accent);
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-        }
-        .common-negative-prompts input[type="checkbox"] {
-            margin-right: 10px;
-            accent-color: var(--secondary-accent);
-            transform: scale(1.1);
-        }
-        .common-negative-prompts label {
-            font-size: 0.9em;
-            color: var(--text-color);
-            margin: 0; /* Override default label margin */
-            font-weight: 500;
-            text-transform: none;
-            text-shadow: none;
-        }
-
-        /* Responsive adjustments */
-        @media (min-width: 650px) { /* For wider screens (tablet and desktop) */
-            .tab-content.active {
-                flex-direction: row;
-                justify-content: space-between;
-                padding: 15px; /* More padding when side-by-side */
-            }
-            .sidebar {
-                width: 200px; /* Wider sidebar */
-                margin-right: 20px;
-                margin-bottom: 0;
-            }
-            .selectors-grid {
-                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-                padding: 15px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 18px 12px;
-            }
-            h1 {
-                font-size: 2.2em;
-            }
-            button {
-                font-size: 1.1em;
-                padding: 14px 25px;
-            }
-            .prompt-tabs {
-                padding: 4px;
-            }
-            .tab-item {
-                font-size: 0.8em;
-                padding: 10px 5px;
-            }
-            .sidebar-item {
-                padding: 10px 12px;
-                font-size: 0.8em;
-            }
-            .selectors-grid {
-                grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
-                gap: 12px;
-                padding: 12px;
-            }
-            .selector-item span {
-                font-size: 0.75em;
-            }
-            .showcase-cards {
-                grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-                gap: 12px;
-                padding: 15px;
-            }
-            .showcase-card img {
-                height: 100px;
-            }
-            .modal-content {
-                padding: 25px;
-            }
-            .modal-content h3 {
-                font-size: 1.6em;
-            }
-            .common-negative-prompts .checkbox-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* New Feature Styles */
-        .feature-buttons {
-            display: flex;
-            justify-content: space-around;
-            gap: 10px;
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #250040;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
-        }
-        .feature-buttons button {
-            width: auto;
-            flex-grow: 1;
-            padding: 10px 15px;
-            font-size: 0.9em;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-            margin-top: 0; /* Override default button margin */
-        }
-        .feature-buttons button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5), 0 0 15px rgba(0,255,255,0.3);
-        }
-
-        #promptHistoryContainer {
-            margin-top: 25px;
-            text-align: left;
-            padding: 15px;
-            background-color: #250040;
-            border-radius: 10px;
-            font-size: 0.9em;
-            border: 1px solid var(--border-color);
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
-            max-height: 200px;
-            overflow-y: auto;
-            display: none; /* Hidden by default */
-        }
-        #promptHistoryContainer h4 {
-            color: var(--secondary-accent);
-            margin-top: 0;
-            margin-bottom: 10px;
-            text-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
-        }
-        #promptHistoryList {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        #promptHistoryList li {
-            background-color: #1c0033;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            padding: 8px 10px;
-            margin-bottom: 8px;
-            word-wrap: break-word;
-            font-size: 0.85em;
-            color: var(--text-color);
-            cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-        }
-        #promptHistoryList li:hover {
-            background-color: #3d0066;
-            transform: translateX(2px);
-            color: var(--secondary-accent);
-        }
-
-        /* Modal for Action, Outfit, Scene tabs */
-        .tab-modal-overlay {
-            display: none; /* Hidden by default */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(6px);
-            z-index: 999; /* Below settings modal */
-            justify-content: center;
-            align-items: center;
-        }
-
-        .tab-modal-content {
-            background-color: var(--container-bg);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7), 0 0 40px rgba(0, 255, 255, 0.4);
-            width: 90%;
-            max-width: 580px;
-            position: relative;
-            animation: fadeIn 0.3s ease-out;
-            border: 2px solid var(--secondary-accent);
-            text-align: left;
-        }
-        .tab-modal-content h3 {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--accent-color);
-            margin-top: 0;
-            margin-bottom: 25px;
-            font-size: 2em;
-            text-align: center;
-            text-shadow: var(--text-shadow-glow);
-        }
-        .tab-modal-content .close-button {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: var(--secondary-accent);
-            font-size: 1.8em;
-            cursor: pointer;
-            transition: color 0.3s ease, transform 0.2s ease;
-        }
-        .tab-modal-content .close-button:hover {
-            color: var(--error-color);
-            transform: rotate(90deg);
-        }
-        .tab-modal-content .selectors-grid {
-            max-height: 400px; /* Constrain height */
-            overflow-y: auto; /* Scrollable if many items */
-            padding-right: 10px; /* For scrollbar */
-        }
-
-        /* Scrollbar styles for modal grid */
-        .tab-modal-content .selectors-grid::-webkit-scrollbar {
-            width: 8px;
-        }
-        .tab-modal-content .selectors-grid::-webkit-scrollbar-track {
-            background: #2d004d;
-            border-radius: 10px;
-        }
-        .tab-modal-content .selectors-grid::-webkit-scrollbar-thumb {
-            background: var(--secondary-accent);
-            border-radius: 10px;
-            border: 1px solid #00aaaa;
-        }
-        .tab-modal-content .selectors-grid::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-color);
-        }
-        /* Style for What's New content */
-        .whats-new-content ul {
-            list-style: disc inside;
-            padding-left: 10px;
-            margin-bottom: 20px;
-        }
-        .whats-new-content li {
-            margin-bottom: 8px;
-            color: var(--highlight-text);
-            line-height: 1.4;
-        }
-        .whats-new-content strong {
-            color: var(--secondary-accent);
-        }
     </style>
 </head>
 <body>
@@ -880,50 +782,56 @@
                 <!-- Style Tab Content -->
                 <div id="style-tab-content" class="tab-content">
                     <div class="selectors-grid style-selectors">
-                        <div class="selector-item" data-value="Anime style, detailed anime art, vibrant colors, expressive eyes, dynamic posing, digital illustration, highly detailed, sharp focus, beautiful composition, trending on artstation, masterpiece, best quality, cinematic, studio lighting, professional artwork, clean rendering, smooth shading, polished artwork, crisp lines, perfect anatomy, soft glow">
+                        <div class="selector-item" data-value="Anime style, detailed anime art, vibrant colors, expressive eyes, dynamic posing, digital illustration, highly detailed, sharp focus, beautiful composition, trending on artstation, masterpiece, best quality, cinematic, studio lighting, professional artwork, 4k, 8k, UHD, extreme detail, intricate textures, cel-shaded, light particles, smooth animation influence, high contrast, atmospheric lighting">
                             <span>Anime</span>
                         </div>
-                        <div class="selector-item" data-value="Realistic photo, hyperrealistic, ultra detailed, sharp focus, natural lighting, lifelike textures, cinematic realism, professional photography, dslr quality, clean, crisp, high fidelity, authentic">
+                        <div class="selector-item" data-value="Realistic photo, hyperrealistic, ultra detailed, sharp focus, natural lighting, lifelike textures, cinematic realism, professional photography, dslr quality, 8k, UHD, incredible detail, skin pores, hair strands, volumetric lighting, photogrammetry, award-winning photography, naturalistic, authentic">
                             <span>Realistic</span>
                         </div>
-                        <div class="selector-item" data-value="Pastel illustration, soft colors, dreamy aesthetic, gentle gradients, delicate brushstrokes, whimsical atmosphere, ethereal glow, smooth blending, clean gradients">
+                        <div class="selector-item" data-value="Pastel illustration, soft colors, dreamy aesthetic, gentle gradients, delicate brushstrokes, whimsical atmosphere, ethereal glow, calming, subtle textures, fine art, muted tones, dreamcore">
                             <span>Pastel</span>
                         </div>
-                        <div class="selector-item" data-value="Digital illustration, crisp lines, clean colors, smooth rendering, intricate details, professional artwork, polished finish, studio quality, sharp edges, precise, high definition">
+                        <div class="selector-item" data-value="Digital illustration, crisp lines, clean colors, smooth rendering, intricate details, professional artwork, polished finish, studio quality, vector art, graphic design, concept art quality, clean lines, sharp definition">
                             <span>Illustration</span>
                         </div>
-                        <div class="selector-item" data-value="Oil painting, rich textures, visible brushstrokes, classic art style, deep colors, chiaroscuro lighting, dramatic shadows, museum quality, textured, authentic brushwork">
+                        <div class="selector-item" data-value="Oil painting, rich textures, visible brushstrokes, classic art style, deep colors, chiaroscuro lighting, dramatic shadows, museum quality, impasto, detailed canvas, master painterly effect, classical art, Baroque, Renaissance influence">
                             <span>Oil Painting</span>
                         </div>
-                        <div class="selector-item" data-value="Watercolor painting, soft washes, transparent colors, fluid strokes, organic feel, ethereal glow, delicate and vibrant, clear, luminous washes">
+                        <div class="selector-item" data-value="Watercolor painting, soft washes, transparent colors, fluid strokes, organic feel, ethereal glow, delicate and vibrant, hand-painted texture, wet-on-wet technique, impressionistic, light diffusion">
                             <span>Watercolor</span>
                         </div>
-                        <div class="selector-item" data-value="Pixel art, 8-bit, retro game style, blocky aesthetic, distinct pixel grid, nostalgic feel, clean pixels, sharp edges">
+                        <div class="selector-item" data-value="Pixel art, 8-bit, 16-bit, retro game style, blocky aesthetic, distinct pixel grid, nostalgic feel, precise pixel placement, gameboy style, modern pixel art, detailed sprites, low-resolution charm">
                             <span>Pixel Art</span>
                         </div>
-                        <div class="selector-item" data-value="Cyberpunk style, neon lighting, futuristic city, gritty atmosphere, technological enhancements, glowing wires, rain-slicked streets, sharp, high-tech, sleek">
+                        <div class="selector-item" data-value="Cyberpunk style, neon lighting, futuristic city, gritty atmosphere, technological enhancements, glowing wires, rain-slicked streets, high-tech, dystopian, chrome accents, augmented reality, urban decay, intricate circuits, dark future, synthetic, reflective surfaces">
                             <span>Cyberpunk</span>
                         </div>
-                        <div class="selector-item" data-value="Fantasy art, epic, magical, mythological elements, detailed armor, mystical creatures, vibrant landscapes, heroic figures, grand, majestic, enchanting">
+                        <div class="selector-item" data-value="Fantasy art, epic, magical, mythological elements, detailed armor, mystical creatures, vibrant landscapes, heroic figures, high fantasy, dramatic atmosphere, ancient ruins, fantastical creatures, enchanted forests, medieval, heroic, grand scale">
                             <span>Fantasy Art</span>
                         </div>
-                        <div class="selector-item" data-value="Manga style, black and white, halftone dots, speed lines, dramatic expressions, comic book panels, clean linework, dynamic">
+                        <div class="selector-item" data-value="Manga style, black and white, halftone dots, speed lines, dramatic expressions, comic book panels, dynamic action, shonen/shojo aesthetic, inked lines, detailed backgrounds, action lines, graphic novel, sequential art">
                             <span>Manga</span>
                         </div>
-                        <div class="selector-item" data-value="Concept art, quick brushstrokes, atmospheric, design study, exploratory sketch, cinematic feel, broad, evocative, inspiring">
+                        <div class="selector-item" data-value="Concept art, quick brushstrokes, atmospheric, design study, exploratory sketch, cinematic feel, broad strokes, evocative, game art, matte painting, world-building art, idea generation, visual development">
                             <span>Concept Art</span>
                         </div>
-                        <div class="selector-item" data-value="Gothic art, dark tones, intricate details, medieval architecture, dramatic shadows, mysterious atmosphere, haunting, detailed, grand">
+                        <div class="selector-item" data-value="Gothic art, dark tones, intricate details, medieval architecture, dramatic shadows, mysterious atmosphere, haunting beauty, solemn, intricate patterns, dark fantasy, romantic gothic">
                             <span>Gothic Art</span>
                          </div>
-                         <div class="selector-item" data-value="Cartoon style, bold outlines, simple colors, expressive characters, humorous, flat shading, clean, vibrant, friendly">
+                         <div class="selector-item" data-value="Cartoon style, bold outlines, simple colors, expressive characters, humorous, flat shading, cel animation, comic strip style, vibrant, playful">
                             <span>Cartoon</span>
                         </div>
-                        <div class="selector-item" data-value="Sketch art, pencil lines, cross-hatching, monochromatic, unfinished look, expressive, raw, artistic">
+                        <div class="selector-item" data-value="Sketch art, pencil lines, cross-hatching, monochromatic, unfinished look, concept sketch, loose drawing, charcoal, pen and ink">
                             <span>Sketch</span>
                         </div>
-                        <div class="selector-item" data-value="Surreal, dreamlike, abstract elements, illogical composition, symbolic imagery, imaginative, symbolic, deep">
+                        <div class="selector-item" data-value="Surreal, dreamlike, abstract elements, illogical composition, symbolic imagery, Salvador Dali inspired, otherworldly, fantastical realism, mind-bending, bizarre">
                             <span>Surreal</span>
+                        </div>
+                        <div class="selector-item" data-value="Pop Art style, bold lines, bright colors, comic book influence, graphic, energetic, Lichtenstein inspired, halftone dots, Warhol style, retro pop, vibrant, modern, iconic imagery">
+                            <span>Pop Art</span>
+                        </div>
+                         <div class="selector-item" data-value="Synthwave aesthetic, electric blues, purples, 80s vibe, retrowave, night city, gridlines, neon lights, glowing effects, cyberpunk, retro future, vaporwave, chrome, reflections">
+                            <span>Synthwave</span>
                         </div>
                     </div>
                 </div>
@@ -945,37 +853,37 @@
 
         <label for="styleSelector">Select Main Style/Quality:</label>
         <select id="styleSelector">
-            <option value="">Default (no specific style)</option>
-            <option value="Anime style, detailed anime art, vibrant colors, expressive eyes, dynamic posing, digital illustration, highly detailed, sharp focus, beautiful composition, trending on artstation, masterpiece, best quality, cinematic, studio lighting, professional artwork, 4k, 8k, UHD, extreme detail, intricate textures, cel-shaded, light particles, smooth animation influence, clean rendering, smooth shading, polished artwork, crisp lines, perfect anatomy, soft glow">Anime</option>
-            <option value="Realistic photo, hyperrealistic, ultra detailed, sharp focus, natural lighting, lifelike textures, cinematic realism, professional photography, dslr quality, 8k, UHD, incredible detail, skin pores, hair strands, volumetric lighting, photogrammetry, award-winning photography, clean, crisp, high fidelity, authentic">Realistic</option>
-            <option value="Pastel illustration, soft colors, dreamy aesthetic, gentle gradients, delicate brushstrokes, whimsical atmosphere, ethereal glow, calming, subtle textures, fine art, muted tones, smooth blending, clean gradients">Pastel</option>
-            <option value="Digital illustration, crisp lines, clean colors, smooth rendering, intricate details, professional artwork, polished finish, studio quality, vector art, graphic design, concept art quality, sharp edges, precise, high definition">Illustration</option>
-            <option value="Oil painting, rich textures, visible brushstrokes, classic art style, deep colors, chiaroscuro lighting, dramatic shadows, museum quality, impasto, detailed canvas, master painterly effect, textured, authentic brushwork">Oil Painting</option>
-            <option value="Watercolor painting, soft washes, transparent colors, fluid strokes, organic feel, ethereal glow, delicate and vibrant, hand-painted texture, wet-on-wet technique, clear, luminous washes">Watercolor</option>
-            <option value="Pixel art, 8-bit, 16-bit, retro game style, blocky aesthetic, distinct pixel grid, nostalgic feel, precise pixel placement, gameboy style, modern pixel art, detailed sprites, clean pixels, sharp edges">Pixel Art</option>
-            <option value="Cyberpunk style, neon lighting, futuristic city, gritty atmosphere, technological enhancements, glowing wires, rain-slicked streets, high-tech, dystopian, chrome accents, augmented reality, urban decay, intricate circuits, sharp, high-tech, sleek">Cyberpunk</option>
-            <option value="Fantasy art, epic, magical, mythological elements, detailed armor, mystical creatures, vibrant landscapes, heroic figures, high fantasy, dramatic atmosphere, ancient ruins, fantastical creatures, enchanted forests, grand, majestic, enchanting">Fantasy Art</option>
-            <option value="Manga style, black and white, halftone dots, speed lines, dramatic expressions, comic book panels, dynamic action, shonen/shojo aesthetic, inked lines, detailed backgrounds, action lines, clean linework, dynamic">Manga</option>
-            <option value="Concept art, quick brushstrokes, atmospheric, design study, exploratory sketch, cinematic feel, broad strokes, evocative, game art, matte painting, world-building art, broad, evocative, inspiring">Concept Art</option>
-            <option value="Gothic art, dark tones, intricate details, medieval architecture, dramatic shadows, mysterious atmosphere, haunting beauty, solemn, intricate patterns, dark fantasy, haunting, detailed, grand">Gothic Art</option>
+            <option value="">Default (Highly Detailed Anime Aesthetic)</option>
+            <option value="Anime style, detailed anime art, vibrant colors, expressive eyes, dynamic posing, digital illustration, highly detailed, sharp focus, beautiful composition, trending on artstation, masterpiece, best quality, cinematic, studio lighting, professional artwork, 4k, 8k, UHD, extreme detail, intricate textures, cel-shaded, light particles, smooth animation influence, high contrast, atmospheric lighting">Anime (Enhanced)</option>
+            <option value="Realistic photo, hyperrealistic, ultra detailed, sharp focus, natural lighting, lifelike textures, cinematic realism, professional photography, dslr quality, 8k, UHD, incredible detail, skin pores, hair strands, volumetric lighting, photogrammetry, award-winning photography, naturalistic, authentic, true-to-life">Realistic (Enhanced)</option>
+            <option value="Pastel illustration, soft colors, dreamy aesthetic, gentle gradients, delicate brushstrokes, whimsical atmosphere, ethereal glow, calming, subtle textures, fine art, muted tones, dreamcore, soft focus, dreamlike">Pastel (Enhanced)</option>
+            <option value="Digital illustration, crisp lines, clean colors, smooth rendering, intricate details, professional artwork, polished finish, studio quality, vector art, graphic design, concept art quality, clean lines, sharp definition, high fidelity">Illustration (Enhanced)</option>
+            <option value="Oil painting, rich textures, visible brushstrokes, classic art style, deep colors, chiaroscuro lighting, dramatic shadows, museum quality, impasto, detailed canvas, master painterly effect, classical art, Baroque, Renaissance influence, expressive brushwork">Oil Painting (Enhanced)</option>
+            <option value="Watercolor painting, soft washes, transparent colors, fluid strokes, organic feel, ethereal glow, delicate and vibrant, hand-painted texture, wet-on-wet technique, impressionistic, light diffusion, painterly effects">Watercolor (Enhanced)</option>
+            <option value="Pixel art, 8-bit, 16-bit, retro game style, blocky aesthetic, distinct pixel grid, nostalgic feel, precise pixel placement, gameboy style, modern pixel art, detailed sprites, low-resolution charm, retro-futuristic, clean pixel lines">Pixel Art (Enhanced)</option>
+            <option value="Cyberpunk style, neon lighting, futuristic city, gritty atmosphere, technological enhancements, glowing wires, rain-slicked streets, high-tech, dystopian, chrome accents, augmented reality, urban decay, intricate circuits, dark future, synthetic, reflective surfaces, high-octane, intense">Cyberpunk (Enhanced)</option>
+            <option value="Fantasy art, epic, magical, mythological elements, detailed armor, mystical creatures, vibrant landscapes, heroic figures, high fantasy, dramatic atmosphere, ancient ruins, fantastical creatures, enchanted forests, medieval, heroic, grand scale, lore-rich, wondrous">Fantasy Art (Enhanced)</option>
+            <option value="Manga style, black and white, halftone dots, speed lines, dramatic expressions, comic book panels, dynamic action, shonen/shojo aesthetic, inked lines, detailed backgrounds, action lines, graphic novel, sequential art, bold lines, striking visuals">Manga (Enhanced)</option>
+            <option value="Concept art, quick brushstrokes, atmospheric, design study, exploratory sketch, cinematic feel, broad strokes, evocative, game art, matte painting, world-building art, idea generation, visual development, design-oriented, imaginative">Concept Art (Enhanced)</option>
+            <option value="Gothic art, dark tones, intricate details, medieval architecture, dramatic shadows, mysterious atmosphere, haunting beauty, solemn, intricate patterns, dark fantasy, romantic gothic, melancholic, elaborate">Gothic Art (Enhanced)</option>
             <!-- More Quality Options - Enhanced for "Insane" Detail -->
-            <option value="High resolution, 8k, UHD, sharp focus, stunning quality, crystal clear, photo-realistic details, intricate textures, extreme detail, microscopic detail, fine details, RTX enabled, advanced rendering, super-resolution, clean, crisp, high definition">High Resolution (8k, UHD)</option>
-            <option value="Cinematic, dramatic lighting, epic atmosphere, wide angle, deep shadows, bright highlights, filmic look, bokeh, volumetric lighting, ray tracing, Hollywood movie quality, visual masterpiece, powerful, atmospheric">Cinematic (Dramatic Lighting)</option>
-            <option value="Dreamlike, ethereal aesthetic, mystical glow, soft focus, flowing elements, fantastical, otherworldly, whimsical, magical particles, shimmering effects, bokeh, shallow depth of field, subtle gradients, soft, mystical, translucent">Dreamlike/Ethereal</option>
-            <option value="Photorealistic, ultra detailed, hyperrealistic, sharp focus, minute details, lifelike, natural skin texture, realistic hair, pores, reflections, subsurface scattering, advanced realism engine, award-winning photo, immaculate, lifelike, genuine">Photorealistic (Ultra Detailed)</option>
-            <option value="Stylized, unique art style, intricate textures, artistic interpretation, distinct visual language, painterly, vibrant, unique brushstrokes, illustrative, graphic novel art, creative, distinct, visually striking">Stylized Art</option>
-            <option value="Vibrant colors, rich hues, dynamic color palette, saturated, brilliant, eye-popping colors, chromatic aberration, neon accents, energetic, lively, fantastical colors, bold, lively, intense">Vibrant Colors</option>
-            <option value="Monochromatic, black and white, grayscale, strong contrast, classic film aesthetic, noir, chiaroscuro, high contrast, dramatic shadows, deep tones, stark, dramatic, classic">Monochromatic (B&W)</option>
-            <option value="Pop Art style, bold lines, bright colors, comic book influence, graphic, energetic, Lichtenstein inspired, halftone dots, Warhol style, retro pop, dynamic, iconic, graphic">Pop Art</option>
-            <option value="Soft focus, bokeh effect, dreamy blur, shallow depth of field, gentle light, volumetric fog, ethereal atmosphere, romantic, dreamy, hazy glow, gentle, delicate, romantic">Soft Focus/Bokeh</option>
-            <option value="Gritty, textured, dark tones, cinematic noir, rough, desaturated, urban decay, grunge, film grain, worn aesthetic, stark realism, raw, authentic, harsh">Gritty/Dark Noir</option>
-            <option value="Minimalist, clean lines, simple background, negative space, serene, calming, uncluttered, abstract, geometric purity, modern aesthetic, simple, elegant, stark">Minimalist</option>
-            <option value="Vaporwave aesthetic, neon glow, retrofuturism, 80s vaporwave, glitch art, pastel hues, synthwave elements, chromatic aberration, digital art, retro sci-fi, nostalgic, surreal, electric">Vaporwave</option>
-            <option value="Synthwave aesthetic, electric blues, purples, 80s vibe, retrowave, night city, gridlines, neon lights, glowing effects, cyberpunk, retro future, neon, futuristic, energetic">Synthwave</option>
-            <option value="Impressionistic painting, visible brushstrokes, light play, atmospheric, soft edges, natural light, Monet inspired, vibrant dabs, textured canvas, painterly, luminous, fleeting">Impressionistic</option>
-            <option value="Baroque painting, opulent, dramatic, rich colors, intricate details, dynamic composition, grand scale, highly decorative, intense emotion, Rubens inspired, ornate, dramatic, powerful">Baroque Painting</option>
-            <option value="Surrealism, dream logic, symbolic elements, fantastical realism, subconscious imagery, unexpected juxtapositions, dreamscapes, distorted reality, Dali-esque, ethereal surrealism, bizarre, imaginative, profound">Surrealism</option>
-            <option value="Abstract expressionism, gestural brushstrokes, emotional depth, vibrant chaos, raw energy, non-representational, action painting, Pollock inspired, expressive, dynamic, spontaneous">Abstract Expressionism</option>
+            <option value="High resolution, 8k, UHD, sharp focus, stunning quality, crystal clear, photo-realistic details, intricate textures, extreme detail, microscopic detail, fine details, RTX enabled, advanced rendering, super-resolution, pristine, flawless, hyper-detailed">High Resolution (8k, UHD)</option>
+            <option value="Cinematic, dramatic lighting, epic atmosphere, wide angle, deep shadows, bright highlights, filmic look, bokeh, volumetric lighting, ray tracing, Hollywood movie quality, visual masterpiece, blockbuster quality, dynamic composition">Cinematic (Dramatic Lighting)</option>
+            <option value="Dreamlike, ethereal aesthetic, mystical glow, soft focus, flowing elements, fantastical, otherworldly, whimsical, magical particles, shimmering effects, bokeh, shallow depth of field, subtle gradients, hazy, angelic, otherworldly">Dreamlike/Ethereal</option>
+            <option value="Photorealistic, ultra detailed, hyperrealistic, sharp focus, minute details, lifelike, natural skin texture, realistic hair, pores, reflections, subsurface scattering, advanced realism engine, award-winning photo, uncanny realism, true-to-life">Photorealistic (Ultra Detailed)</option>
+            <option value="Stylized, unique art style, intricate textures, artistic interpretation, distinct visual language, painterly, vibrant, unique brushstrokes, illustrative, graphic novel art, creative, imaginative, distinct aesthetic">Stylized Art</option>
+            <option value="Vibrant colors, rich hues, dynamic color palette, saturated, brilliant, eye-popping colors, chromatic aberration, neon accents, energetic, lively, fantastical colors, high saturation, intense coloration">Vibrant Colors</option>
+            <option value="Monochromatic, black and white, grayscale, strong contrast, classic film aesthetic, noir, chiaroscuro, high contrast, dramatic shadows, deep tones, stark, elegant, timeless">Monochromatic (B&W)</option>
+            <option value="Pop Art style, bold lines, bright colors, comic book influence, graphic, energetic, Lichtenstein inspired, halftone dots, Warhol style, retro pop, vibrant, modern, iconic imagery, graphic design influence">Pop Art</option>
+            <option value="Soft focus, bokeh effect, dreamy blur, shallow depth of field, gentle light, volumetric fog, ethereal atmosphere, romantic, dreamy, hazy glow, diffused light, gentle gradients">Soft Focus/Bokeh</option>
+            <option value="Gritty, textured, dark tones, cinematic noir, rough, desaturated, urban decay, grunge, film grain, worn aesthetic, stark realism, raw, distressed, industrial">Gritty/Dark Noir</option>
+            <option value="Minimalist, clean lines, simple background, negative space, serene, calming, uncluttered, abstract, geometric purity, modern aesthetic, sparse, elegant simplicity">Minimalist</option>
+            <option value="Vaporwave aesthetic, neon glow, retrofuturism, 80s vaporwave, glitch art, pastel hues, synthwave elements, chromatic aberration, digital art, retro sci-fi, nostalgic, dreamlike, digital haze">Vaporwave</option>
+            <option value="Synthwave aesthetic, electric blues, purples, 80s vibe, retrowave, night city, gridlines, neon lights, glowing effects, cyberpunk, retro future, chrome, reflections, pulsating light, energetic">Synthwave</option>
+            <option value="Impressionistic painting, visible brushstrokes, light play, atmospheric, soft edges, natural light, Monet inspired, vibrant dabs, textured canvas, loose brushwork, shimmering light">Impressionistic</option>
+            <option value="Baroque painting, opulent, dramatic, rich colors, intricate details, dynamic composition, grand scale, highly decorative, intense emotion, Rubens inspired, elaborate, theatrical, majestic">Baroque Painting</option>
+            <option value="Surrealism, dream logic, symbolic elements, fantastical realism, subconscious imagery, unexpected juxtapositions, dreamscapes, distorted reality, Dali-esque, ethereal surrealism, mind-bending, philosophical">Surrealism</option>
+            <option value="Abstract expressionism, gestural brushstrokes, emotional depth, vibrant chaos, raw energy, non-representational, action painting, Pollock inspired, dynamic, fluid, powerful, intense emotion">Abstract Expressionism</option>
         </select>
 
         <label for="styleDetailsPrompt">Additional Style Details (e.g., cinematic lighting, soft focus, highly detailed, vibrant colors)</label>
@@ -983,20 +891,20 @@
 
         <label for="appearancePrompt">Appearance (e.g., sharp jawline, athletic build, curly black hair, amber eyes)</label>
         <textarea id="appearancePrompt" rows="3" placeholder="Describe facial features, hairstyle, body type, skin color, etc."></textarea>
-        
+
         <label for="clothingPrompt">Clothing & Accessories (e.g., red silk cheongsam, pearl necklace)</label>
         <textarea id="clothingPrompt" rows="3" placeholder="Specify outfits, shoes, jewelry, and style details."></textarea>
-        
+
         <label for="actionBackgroundPrompt">Action & Background (e.g., full body, kneeling in cherry blossom forest, holding a katana)</label>
         <textarea id="actionBackgroundPrompt" rows="3" placeholder="Describe character pose + environment setting."></textarea>
 
         <!-- Common Negative Prompts Section - Advanced -->
         <div class="common-negative-prompts">
-            <h3>(If you need more Anime Like Disable this) Exclude Unwanted Elements (Advanced Negative Prompts)</h3>
+            <h3>Exclude Unwanted Elements (Advanced Negative Prompts)</h3>
             <div class="checkbox-grid">
                 <div class="checkbox-item">
                     <input type="checkbox" id="neg_deformed" value="deformed, mutated, ugly, disfigured, extra limbs, missing limbs, malformed, bad hands, fused fingers, too many fingers, too few fingers, unnatural body, distorted body, bad anatomy, poorly drawn hands, poorly drawn face, gross proportions, bad feet, deformed feet, extra toes, missing toes, fused toes, stretched proportions, poorly drawn feet">
-                    <label for="neg_deformed">(Disable this too for Better generation) Deformity & Anatomy Issues</label>
+                    <label for="neg_deformed">Deformity & Anatomy Issues</label>
                 </div>
                 <div class="checkbox-item">
                     <input type="checkbox" id="neg_blurry" value="blurry, out of focus, gaussian blur, motion blur, noisy, grainy, pixelated, jpeg artifacts, low quality, worst quality, bad quality, normal quality, soft focus (if not desired), overexposed, underexposed, dark, gloomy">
@@ -1023,15 +931,15 @@
                     <label for="neg_multiple_figures">Crowding/Irrelevant Objects</label>
                 </div>
                 <div class="checkbox-item">
-                    <input type="checkbox" id="neg_nsfw" value="nsfw, explicit, sexual, nude, gore, violent, suggestive, mature content, provocative, disgusting, repulsive">
-                    <label for="neg_nsfw">NSFW/Sensitive Content</label>
+                    <input type="checkbox" id="neg_nsfw" value="nsfw, explicit, sexual, nude, gore, violent, suggestive, mature content, provocative, disgusting, repulsive" checked>
+                    <label for="neg_nsfw">NSFW/Sensitive Content (Always ON)</label>
                 </div>
             </div>
         </div>
 
         <label for="negativePrompt">Additional Negative Prompt (Custom)</label>
         <textarea id="negativePrompt" rows="3" placeholder="Exclude any specific object, color, or theme you don't want."></textarea>
-        
+
         <div class="feature-buttons">
             <button id="copyPromptBtn">Copy Prompt</button>
             <button id="clearInputsBtn">Clear All</button>
@@ -1039,7 +947,7 @@
         </div>
 
         <button id="generateBtn">Generate Image</button>
-        <button id="downloadBtn" style="display: none;">Download Image</button> <!-- Download button -->
+        <button id="downloadBtn" style="display: none;">Download Image</button>
 
         <div id="loading">Generating image... Please wait.</div>
         <div id="error-message"></div>
@@ -1055,7 +963,7 @@
                 <!-- Generated image will be placed here -->
             </div>
         </div>
-        
+
         <div id="textResponse" style="display: none;">
             <strong>Text from AI:</strong> <span id="generatedText"></span>
         </div>
@@ -1106,7 +1014,7 @@
                     Version 3 (Auto-cycle API Keys)
                 </label>
             </div>
-            <p class="small-text" style="text-align: center; margin-top: 15px;">**Ensure API Keys are valid and correct.**</p>
+            <p class="small-text" style="text-align: left; margin-top: 15px;">**Ensure API Keys are valid and correct.**</p>
 
             <div class="current-settings">
                 <p>App Version: <strong id="appVersionDisplay"></strong></p>
@@ -1190,853 +1098,7 @@
 
     <!-- Hidden canvas element for watermarking -->
     <canvas id="watermarkCanvas"></canvas>
-
-    <script>
-        // API Keys (REPLACE WITH YOUR ACTUAL API KEYS)
-        const API_KEYS = {
-            version1: ["AIzaSyADX706YwDBXqKkgnj00WzblN628-m-iDg"], // Single key for Version 1
-            version2: ["AIzaSyBhfvEhDZXBCVKnQNybOzmPtMOSfCNW1Jg"], // Single key for Version 2
-            version3: [ // Multiple keys for Version 3 (auto-cycle)
-                "AIzaSyAMUqBk9sYxHsIx8awjY9KMTbIoP34d-3c",
-                // Add more keys here if needed for auto-cycling
-                // "YOUR_GEMINI_API_KEY_4",
-                // "YOUR_GEMINI_API_KEY_5"
-            ]
-        };
-        const MODEL_ID = "gemini-2.0-flash-preview-image-generation";
-        const APP_VERSION = "1.2.0"; // New constant for application version
-
-        let currentAPIKey = API_KEYS.version1[0]; // Default to the first key of Version 1
-        let currentAPIVersion = "version1";
-        let apiKeyIndex = 0; // For cycling through Version 3 keys
-
-        const generateBtn = document.getElementById("generateBtn");
-        const downloadBtn = document.getElementById("downloadBtn");
-        const styleSelector = document.getElementById("styleSelector");
-        const styleDetailsPromptInput = document.getElementById("styleDetailsPrompt"); 
-        const appearancePromptInput = document.getElementById("appearancePrompt");
-        const clothingPromptInput = document.getElementById("clothingPrompt");
-        const actionBackgroundPromptInput = document.getElementById("actionBackgroundPrompt");
-        const negativePromptInput = document.getElementById("negativePrompt");
-        const commonNegativeCheckboxes = document.querySelectorAll('.common-negative-prompts input[type="checkbox"]');
-
-        const loadingDiv = document.getElementById("loading");
-        const errorMessageDiv = document.getElementById("error-message");
-        const imageContainer = document.getElementById("imageContainer");
-        const initialPlaceholder = document.getElementById("initialPlaceholder"); 
-        const generatedImageWrapper = document.getElementById("generatedImageWrapper"); 
-        const textResponseDiv = document.getElementById("textResponse");
-        const generatedTextSpan = document.getElementById("generatedText");
-
-        const watermarkCanvas = document.getElementById("watermarkCanvas");
-        const ctx = watermarkCanvas.getContext("2d");
-
-        const settingsBtn = document.getElementById("settingsBtn");
-        const appSettingsModal = document.getElementById("appSettingsModal"); // Renamed
-        const closeAppSettingsModalBtn = document.getElementById("closeAppSettingsModalBtn"); // Renamed
-        const saveAppSettingsBtn = document.getElementById("saveAppSettingsBtn"); // Renamed
-        const appVersionDisplay = document.getElementById("appVersionDisplay"); // New display element
-        const currentVersionDisplay = document.getElementById("currentVersionDisplay");
-        const currentApiKeyDisplay = document.getElementById("currentApiKeyDisplay");
-        const currentModelIdDisplay = document.getElementById("currentModelIdDisplay");
-
-        // New What's New Modal elements
-        const openWhatsNewBtn = document.getElementById("openWhatsNewBtn");
-        const whatsNewModal = document.getElementById("whatsNewModal");
-        const closeWhatsNewModalBtn = document.getElementById("closeWhatsNewModalBtn");
-
-
-        const copyPromptBtn = document.getElementById("copyPromptBtn");
-        const clearInputsBtn = document.getElementById("clearInputsBtn");
-        const toggleHistoryBtn = document.getElementById("toggleHistoryBtn");
-        const promptHistoryContainer = document.getElementById("promptHistoryContainer");
-        const promptHistoryList = document.getElementById("promptHistoryList");
-        let promptHistory = []; // Array to store generated prompts (now objects)
-
-        let currentWatermarkedImage = null; // To store the latest watermarked image data URL
-
-        // --- Modal & Tab Data Definitions ---
-        const charItemsByCategory = {
-            'general': [
-                { value: '1 boy', text: '1 boy' },
-                { value: '1 girl', text: '1 girl' },
-                { value: 'young boy', text: 'Young Boy' },
-                { value: 'young girl', text: 'Young Girl' },
-                { value: 'teenager boy', text: 'Teen Boy' },
-                { value: 'teenager girl', text: 'Teen Girl' },
-                { value: 'adult male', text: 'Adult Male' },
-                { value: 'adult female', text: 'Adult Female' },
-                { value: 'elderly man', text: 'Elderly Man' },
-                { value: 'elderly woman', text: 'Elderly Woman' },
-                { value: 'child', text: 'Child' },
-                { value: 'baby', text: 'Baby' },
-                { value: 'fantasy elf', text: 'Fantasy Elf' },
-                { value: 'fantasy dwarf', text: 'Fantasy Dwarf' },
-                { value: 'fantasy orc', text: 'Fantasy Orc' },
-                { value: 'mythical creature', text: 'Mythical Creature' },
-                { value: 'robot', text: 'Robot' },
-                { value: 'animal character', text: 'Animal Character' },
-                { value: 'monster', text: 'Monster' },
-                { value: 'angel', text: 'Angel' },
-                { value: 'demon', text: 'Demon' },
-                { value: 'vampire', text: 'Vampire' },
-                { value: 'werewolf', text: 'Werewolf' },
-            ],
-            'male': [
-                { value: 'young boy', text: 'Young Boy' },
-                { value: 'teenager boy', text: 'Teen Boy' },
-                { value: 'adult male', text: 'Adult Male' },
-                { value: 'elderly man', text: 'Elderly Man' },
-                { value: 'muscular man', text: 'Muscular Man' },
-                { value: 'slender man', text: 'Slender Man' },
-                { value: 'bearded man', text: 'Bearded Man' },
-                { value: 'man with glasses', text: 'Man with Glasses' },
-                { value: 'businessman', text: 'Businessman' },
-                { value: 'hero male', text: 'Hero' },
-                { value: 'villain male', text: 'Villain' },
-            ],
-            'female': [
-                { value: 'young girl', text: 'Young Girl' },
-                { value: 'teenager girl', text: 'Teen Girl' },
-                { value: 'adult female', text: 'Adult Female' },
-                { value: 'curvy woman', text: 'Curvy Woman' },
-                { value: 'petite woman', text: 'Petite Woman' },
-                { value: 'woman with long hair', text: 'Long Hair Woman' },
-                { value: 'woman with short hair', text: 'Short Hair Woman' },
-                { value: 'businesswoman', text: 'Businesswoman' },
-                { value: 'hero female', text: 'Heroine' },
-                { value: 'villain female', text: 'Villainess' },
-            ],
-            'pairs': [
-                { value: '2 boys', text: '2 boys' },
-                { value: '2 girls', text: '2 girls' },
-                { value: '1 boy and 1 girl', text: '1 boy and 1 girl' },
-                { value: 'couple', text: 'Couple' },
-                { value: 'siblings', text: 'Siblings' },
-                { value: 'friends duo', text: 'Friends Duo' },
-            ],
-            'groups': [
-                { value: '2 people', text: '2 people' },
-                { value: '3 people', text: '3 people' },
-                { value: 'group of friends', text: 'Group of Friends' },
-                { value: 'family', text: 'Family' },
-                { value: 'crowd', text: 'Crowd' },
-                { value: 'team', text: 'Team' },
-            ],
-            'fantasy': [
-                { value: 'fantasy elf', text: 'Fantasy Elf' },
-                { value: 'fantasy dwarf', text: 'Fantasy Dwarf' },
-                { value: 'fantasy orc', text: 'Fantasy Orc' },
-                { value: 'mythical creature', text: 'Mythical Creature' },
-                { value: 'dragon', text: 'Dragon' },
-                { value: 'wizard', text: 'Wizard' },
-                { value: 'knight', text: 'Knight' },
-                { value: 'fairy', text: 'Fairy' },
-                { value: 'goblin', text: 'Goblin' },
-                { value: 'mermaid', text: 'Mermaid' },
-                { value: 'centaur', text: 'Centaur' },
-                { value: 'angel', text: 'Angel' },
-                { value: 'demon', text: 'Demon' },
-                { value: 'vampire', text: 'Vampire' },
-                { value: 'werewolf', text: 'Werewolf' },
-            ],
-            'chibi': [
-                { value: 'chibi character, cute, big head, small body, super deformed', text: 'Chibi Character' },
-                { value: 'chibi boy', text: 'Chibi Boy' },
-                { value: 'chibi girl', text: 'Chibi Girl' },
-                { value: 'chibi animal', text: 'Chibi Animal' },
-            ],
-            'genshin-impact': [
-                { value: 'Genshin Impact character Paimon, floating, small, cute', text: 'Paimon' },
-                { value: 'Genshin Impact character Lumine, blonde hair, traveler outfit, sword', text: 'Lumine' },
-                { value: 'Genshin Impact character Aether, blonde hair, traveler outfit, sword', text: 'Aether' },
-                { value: 'Genshin Impact character Raiden Shogun, Electro Archon, elegant kimono, purple lightning', text: 'Raiden Shogun' },
-                { value: 'Genshin Impact character Zhongli, Geo Archon, formal attire, staff, amber eyes', text: 'Zhongli' },
-                { value: 'Genshin Impact character Venti, Anemo Archon, bard outfit, lyre, playful', text: 'Venti' },
-                { value: 'Genshin Impact character Nahida, Dendro Archon, childlike, white hair, green eyes', text: 'Nahida' },
-                { value: 'Genshin Impact character Yae Miko, shrine maiden, pink hair, fox ears, intelligent', text: 'Yae Miko' },
-                { value: 'Genshin Impact character Klee, Spark Knight, small, bombs, red outfit', text: 'Klee' },
-                { value: 'Genshin Impact character Ganyu, Qilin, long blue hair, Cryo Vision, elegant dress', text: 'Ganyu' },
-                { value: 'Genshin Impact character Hu Tao, Funeral Parlor Director, playful, dark outfit, ghost companion', text: 'Hu Tao' },
-                { value: 'Genshin Impact character Eula, Spindrift Knight, blue hair, Cryo Claymore user, elegant dress', text: 'Eula' },
-                { value: 'Genshin Impact character Keqing, Yuheng of Liyue Qixing, purple hair, cat ears, sword', text: 'Keqing' },
-                { value: 'Genshin Impact character Jean, Dandelion Knight, blonde hair, elegant uniform, Anemo sword', text: 'Jean' },
-                { value: 'Genshin Impact character Diluc, Dawn Winery owner, red hair, long coat, Pyro Claymore', text: 'Diluc' },
-                { value: 'Genshin Impact character Albedo, Chief Alchemist, blonde hair, Geo sword, intellectual', text: 'Albedo' },
-                { value: 'Genshin Impact character Kazuha, wandering samurai, red maple leaf motif, Anemo sword', text: 'Kazuha' },
-                { value: 'Genshin Impact character Wanderer, Anemo Catalyst, dark outfit, calm expression', text: 'Wanderer' },
-                { value: 'Genshin Impact character Furina, Hydro Archon, dramatic, white hair, blue eyes', text: 'Furina' },
-                { value: 'Genshin Impact character Navia, Spina di Rosula President, elegant yellow dress, large hat', text: 'Navia' },
-                { value: 'Genshin Impact character Chevreuse', text: 'Chevreuse' },
-                { value: 'Genshin Impact character Gaming', text: 'Gaming' },
-                { value: 'Genshin Impact character Xianyun', text: 'Xianyun' },
-                { value: 'Genshin Impact character Chiori', text: 'Chiori' },
-                { value: 'Genshin Impact character Arlecchino', text: 'Arlecchino' },
-            ],
-            'jujutsu-kaisen': [],
-            'spy-x-family': [],
-            'kimetsu-no-yaiba': [],
-            'chainsaw': [],
-            'original-characters': [], 
-        };
-
-        const actionItems = [
-            { value: 'Standing pose, full body shot, confident posture', text: 'Standing' },
-            { value: 'Sitting pose, thoughtful expression, relaxed posture', text: 'Sitting' },
-            { value: 'Running pose, dynamic motion, blurred background, full speed, action shot', text: 'Running' },
-            { value: 'Jumping pose, mid-air, energetic, arms outstretched, dynamic pose', text: 'Jumping' },
-            { value: 'Flying pose, graceful, soaring through clouds, majestic wings, ethereal motion', text: 'Flying' },
-            { value: 'Fighting pose, aggressive, action shot, weapon in hand, ready for combat, dynamic battle scene', text: 'Fighting' },
-            { value: 'Holding a sword, ready for battle, strong grip, gleaming blade, warrior stance', text: 'Holding Sword' },
-            { value: 'Reading a book, relaxed, engrossed, soft lighting, cozy atmosphere, intellectual', text: 'Reading Book' },
-            { value: 'Smiling expression, happy, joyful, open mouth, cheerful eyes, heartwarming', text: 'Smiling' },
-            { value: 'Crying expression, sad, tears streaming, emotional, mournful, heartbroken', text: 'Crying' },
-            { value: 'Laughing expression, mouth open, joyful, head tilted back, genuine laughter, carefree', text: 'Laughing' },
-            { value: 'Meditating pose, calm, serene, eyes closed, peaceful aura, spiritual', text: 'Meditating' },
-            { value: 'Walking casually, relaxed stroll, outdoor setting, hands in pockets, urban walk', text: 'Walking' },
-            { value: 'Dancing, fluid movement, expressive body language, energetic, swirling fabric, elegant dance', text: 'Dancing' },
-            { value: 'Sleeping peacefully, tranquil, on a bed, soft blanket, gentle breathing, serene dream', text: 'Sleeping' },
-            { value: 'Waving hand, friendly greeting, open palm, inviting gesture, welcoming', text: 'Waving' },
-            { value: 'Eating food, enjoying a meal, delicious, happy expression', text: 'Eating' },
-            { value: 'Drinking beverage, holding a cup, relaxed, refreshing', text: 'Drinking' },
-            { value: 'Playing musical instrument, guitar, piano, violin, focused, passionate', text: 'Playing Music' },
-            { value: 'Working at a desk, focused, typing, computer screen, busy', text: 'Working' },
-            { value: 'Training, exercising, pushing limits, determined, sweaty', text: 'Training' },
-            { value: 'Casting a spell, magical energy, glowing hands, arcane symbols', text: 'Casting Spell' },
-            { value: 'Driving a car, focused on road, modern vehicle, city night', text: 'Driving' },
-            { value: 'Riding a horse, galloping, majestic, flowing mane', text: 'Riding Horse' },
-        ];
-
-        const outfitItems = [
-            { value: 'Casual clothes, t-shirt, jeans, sneakers, comfortable, everyday wear, stylish casual', text: 'Casual Wear' },
-            { value: 'Formal attire, suit, tie, elegant dress, high heels, sophisticated, business casual, black tie event', text: 'Formal Attire' },
-            { value: 'Knight armor, full plate armor, sword and shield, medieval, shining metal, battle-worn, intricate engravings', text: 'Knight Armor' },
-            { value: 'Futuristic suit, cyberpunk outfit, glowing accents, metallic parts, sleek design, high-tech fabric, LED lights', text: 'Futuristic Suit' },
-            { value: 'Traditional Japanese clothing, kimono, yukata, obi sash, intricate patterns, elegant silk, cherry blossoms motif', text: 'Japanese Trad.' },
-            { value: 'Gothic dress, Victorian style, dark lace, corsets, elegant yet dark, velvet, ruffles, dramatic, mysterious', text: 'Gothic Dress' },
-            { value: 'Sportswear, athletic wear, running shoes, track suit, comfortable, performance fabric, activewear', text: 'Sportswear' },
-            { value: 'Steampunk outfit, gears, goggles, leather, intricate machinery, Victorian sci-fi, brass accents, inventor style', text: 'Steampunk' },
-            { value: 'School uniform, blazer, skirt/pants, tie, polished shoes, academic, neat, classic school look', text: 'Uniform' },
-            { value: 'Fantasy adventurer gear, leather armor, utility belt, cape, rugged, well-worn, practical, elven dagger', text: 'Adventurer Gear' },
-            { value: 'Royal attire, crown, flowing robes, expensive jewelry, opulent, majestic, embroidered, gold accents', text: 'Royal Attire' },
-            { value: 'Wizard robes, staff, pointed hat, magical accessories, ancient scrolls, enchanted, starry patterns', text: 'Wizard Robes' },
-            { value: 'Swimsuit, beachwear, bikini, swimming trunks, summer, relaxed', text: 'Swimsuit' },
-            { value: 'Winter coat, scarf, gloves, warm clothing, snow boots, cozy', text: 'Winter Attire' },
-            { value: 'Traditional Chinese dress, qipao, cheongsam, silk, embroidered, elegant', text: 'Chinese Trad.' },
-            { value: 'Military uniform, camouflage, tactical gear, disciplined, combat ready', text: 'Military Uniform' },
-            { value: 'Doctor\'s coat, scrubs, stethoscope, professional, medical', text: 'Doctor/Nurse' },
-            { value: 'Chef uniform, apron, chef hat, cooking utensils, culinary', text: 'Chef Uniform' },
-        ];
-
-        const sceneItems = [
-            { value: 'Forest background, lush trees, dappled sunlight, dense foliage, serene, magical atmosphere, ancient trees, shimmering light', text: 'Forest' },
-            { value: 'City street background, bustling, skyscrapers, neon signs, urban environment, vibrant nightlife, busy traffic, futuristic cityscape', text: 'City Street' },
-            { value: 'Beach background, sunny, clear water, sandy shores, palm trees, tropical, tranquil, gentle waves, golden hour', text: 'Beach' },
-            { value: 'Mountain landscape, snow-capped peaks, rugged terrain, vast sky, breathtaking view, majestic, alpine, clear air', text: 'Mountain' },
-            { value: 'Space background, starry night, nebulae, planets, cosmic dust, aurora borealis, sci-fi vista, deep space, distant galaxies', text: 'Space' },
-            { value: 'Castle interior, grand hall, stone walls, tapestries, candlelight, royal decor, medieval, antique furniture, noble', text: 'Castle Interior' },
-            { value: 'Cozy cafe interior, warm lighting, wooden tables, coffee steam, books, comfortable, inviting, bustling, soft music', text: 'Cozy Cafe' },
-            { value: 'Fantasy kingdom, majestic castle, rolling hills, vibrant flora, clear skies, utopian, magical land, ancient towers', text: 'Fantasy Kingdom' },
-            { value: 'Sci-fi laboratory, glowing tubes, complex machinery, sterile environment, futuristic tech, advanced research, clean room', text: 'Sci-fi Lab' },
-            { value: 'Underwater scene, coral reef, exotic fish, shimmering light, blue hues, vibrant marine life, sunken ruins, mysterious depths', text: 'Underwater' },
-            { value: 'Desert landscape, sand dunes, scorching sun, vast open space, desolate, ancient ruins, mirage, cracked earth', text: 'Desert' },
-            { value: 'Snowy landscape, winter forest, falling snow, icy ground, cold atmosphere, frozen lake, tranquil winter, blizzard', text: 'Snowy Scene' },
-            { value: 'Rainy street, wet asphalt, reflections, neon lights, dramatic atmosphere, umbrella', text: 'Rainy Street' },
-            { value: 'Volcanic landscape, lava flows, smoke, ash, dangerous, fiery sky', text: 'Volcanic' },
-            { value: 'Ancient temple, overgrown ruins, jungle, mystical, forgotten, stone carvings', text: 'Ancient Temple' },
-            { value: 'Cyberpunk alley, dark, neon graffiti, steaming vents, shadowy figures', text: 'Cyberpunk Alley' },
-        ];
-        
-        // --- End Modal & Tab Data Definitions ---
-
-        // Function to update the displayed settings in the modal
-        function updateCurrentSettingsDisplay() {
-            appVersionDisplay.textContent = APP_VERSION; // Display app version
-            currentVersionDisplay.textContent = currentAPIVersion.replace("version", "Version ");
-            currentApiKeyDisplay.textContent = currentAPIKey ? currentAPIKey.substring(0, 5) + "..." + currentAPIKey.substring(currentAPIKey.length - 5) : "Not set";
-            currentModelIdDisplay.textContent = "Queendom AI 0.2";
-            // Set the checked radio button based on currentAPIVersion
-            const selectedRadio = document.querySelector(`input[name="api_version"][value="${currentAPIVersion}"]`);
-            if (selectedRadio) {
-                selectedRadio.checked = true;
-            }
-        }
-
-        // Function to add watermark
-        function addWatermark(imageDataUrl, watermarkText) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => {
-                    watermarkCanvas.width = img.width;
-                    watermarkCanvas.height = img.height;
-
-                    ctx.drawImage(img, 0, 0);
-
-                    // Watermark settings
-                    ctx.font = `${Math.floor(img.width * 0.04)}px Arial`;
-                    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-                    ctx.textAlign = "right";
-                    ctx.textBaseline = "bottom";
-                    
-                    const margin = Math.floor(img.width * 0.02);
-                    ctx.fillText(watermarkText, img.width - margin, img.height - margin);
-
-                    resolve(watermarkCanvas.toDataURL("image/png"));
-                };
-                img.src = imageDataUrl;
-            });
-        }
-
-        // --- Prompt Reference Tabs and Sidebar Logic ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const tabItems = document.querySelectorAll('.prompt-tabs .tab-item');
-            const tabContents = document.querySelectorAll('.tab-content-area .tab-content');
-            const sidebarItems = document.querySelectorAll('.sidebar .sidebar-item');
-            const characterSelectorsGrid = document.querySelector('.character-selectors');
-
-            // Function to update character selectors
-            function updateCharacterSelectors(category) {
-                let contentHTML = '';
-                const currentItems = charItemsByCategory[category] || [];
-
-                if (currentItems.length > 0) {
-                    currentItems.forEach(itemData => {
-                        contentHTML += `
-                            <div class="selector-item" data-value="${itemData.value}">
-                                <span>${itemData.text}</span>
-                            </div>
-                        `;
-                    });
-                } else {
-                    contentHTML = '<p style="text-align: center; color: var(--text-color); padding: 20px;">Options for this category are coming soon!</p>';
-                }
-                characterSelectorsGrid.innerHTML = contentHTML;
-                attachSelectorItemListeners(characterSelectorsGrid, 'appearancePrompt'); // Pass specific target
-            }
-
-            // Generic function to attach listeners to selectors grid
-            function attachSelectorItemListeners(container, targetPromptId) {
-                container.querySelectorAll('.selector-item').forEach(item => {
-                    item.removeEventListener('click', handleSelectorClick); // Prevent duplicate listeners
-                    item.addEventListener('click', () => handleSelectorClick.call(item, targetPromptId));
-                });
-            }
-
-            function handleSelectorClick(targetPromptId) {
-                const selectedValue = this.dataset.value;
-                const targetPromptInput = document.getElementById(targetPromptId);
-
-                if (targetPromptInput) {
-                    let currentValue = targetPromptInput.value.trim();
-                    const values = currentValue.split(', ').map(v => v.trim()).filter(v => v !== '');
-                    if (!values.includes(selectedValue)) {
-                        values.push(selectedValue);
-                        targetPromptInput.value = values.join(', ');
-                    }
-                } else {
-                    console.error(`Target prompt input with ID '${targetPromptId}' not found.`);
-                }
-            }
-
-            // Modal specific functions
-            function openTabModal(modalId, dataItems, targetPromptId, title) {
-                const modal = document.getElementById(modalId);
-                const grid = modal.querySelector('.selectors-grid');
-                modal.querySelector('h3').textContent = title;
-                
-                let contentHTML = '';
-                if (dataItems.length > 0) {
-                    dataItems.forEach(itemData => {
-                        contentHTML += `
-                            <div class="selector-item" data-value="${itemData.value}">
-                                <span>${itemData.text}</span>
-                            </div>
-                        `;
-                    });
-                } else {
-                    contentHTML = '<p style="text-align: center; color: var(--text-color); padding: 20px;">No options available.</p>';
-                }
-                grid.innerHTML = contentHTML;
-                attachSelectorItemListeners(grid, targetPromptId); // Attach listeners specific to this modal's input
-                modal.style.display = 'flex';
-            }
-
-            function closeTabModal(modalId) {
-                document.getElementById(modalId).style.display = 'none';
-            }
-
-            // Event listeners for main tabs
-            tabItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    tabItems.forEach(t => t.classList.remove('active'));
-                    tabContents.forEach(tc => tc.classList.remove('active'));
-                    item.classList.add('active');
-                    
-                    const activeTabContent = document.getElementById(`${item.dataset.tab}-tab-content`);
-                    if (activeTabContent) {
-                        activeTabContent.classList.add('active');
-                    }
-
-                    // Handle specific tabs opening modals or applying selectors
-                    if (item.dataset.tab === 'character') {
-                        sidebarItems.forEach(si => si.classList.remove('active'));
-                        document.querySelector('.sidebar-item[data-category="general"]').classList.add('active');
-                        updateCharacterSelectors('general');
-                    } else if (item.dataset.tab === 'style') {
-                        // Attach listeners for style selectors when the style tab is opened
-                        const styleSelectorsGrid = document.querySelector('.style-selectors');
-                        attachSelectorItemListeners(styleSelectorsGrid, 'styleDetailsPrompt'); // Target the styleDetailsPrompt
-                    } else if (item.dataset.tab === 'action') {
-                        openTabModal('actionModal', actionItems, 'actionBackgroundPrompt', 'Select Action');
-                    } else if (item.dataset.tab === 'outfit') {
-                        openTabModal('outfitModal', outfitItems, 'clothingPrompt', 'Select Outfit & Accessories');
-                    } else if (item.dataset.tab === 'scene') {
-                        openTabModal('sceneModal', sceneItems, 'actionBackgroundPrompt', 'Select Scene & Background');
-                    }
-                });
-            });
-
-            // Event listeners for sidebar items (character tab only)
-            sidebarItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    sidebarItems.forEach(si => si.classList.remove('active'));
-                    item.classList.add('active');
-                    updateCharacterSelectors(item.dataset.category);
-                });
-            });
-
-            // Event listeners for closing tab modals
-            document.querySelectorAll('.tab-modal-content .close-button').forEach(button => {
-                button.addEventListener('click', function() {
-                    closeTabModal(this.dataset.modalId);
-                });
-            });
-            document.querySelectorAll('.tab-modal-overlay').forEach(overlay => {
-                overlay.addEventListener('click', function(e) {
-                    if (e.target === overlay) {
-                        closeTabModal(this.id);
-                    }
-                });
-            });
-
-            // Initial load for character tab
-            updateCharacterSelectors('general');
-            updateCurrentSettingsDisplay(); // Initialize modal display
-        });
-        // --- END Prompt Reference Tabs and Sidebar Logic ---
-
-        // --- Feature Buttons Logic ---
-        copyPromptBtn.addEventListener("click", () => {
-            const promptData = getCurrentPromptData(); // Get all current input values
-            const promptToCopy = generateCombinedPromptString(promptData);
-            if (promptToCopy) {
-                navigator.clipboard.writeText(promptToCopy).then(() => {
-                    alert("Prompt copied to clipboard!");
-                }).catch(err => {
-                    console.error('Failed to copy prompt: ', err);
-                    alert("Failed to copy prompt.");
-                });
-            } else {
-                alert("No prompt data to copy.");
-            }
-        });
-
-        clearInputsBtn.addEventListener("click", () => {
-            if (confirm("Are you sure you want to clear all input fields?")) {
-                styleSelector.value = "";
-                styleDetailsPromptInput.value = "";
-                appearancePromptInput.value = "";
-                clothingPromptInput.value = "";
-                actionBackgroundPromptInput.value = "";
-                negativePromptInput.value = "";
-                commonNegativeCheckboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                });
-                alert("All input fields cleared!");
-            }
-        });
-
-        toggleHistoryBtn.addEventListener("click", () => {
-            if (promptHistoryContainer.style.display === "block") {
-                promptHistoryContainer.style.display = "none";
-                toggleHistoryBtn.textContent = "Toggle History"; // Change back to "Show History" when hiding
-            } else {
-                promptHistoryContainer.style.display = "block";
-                toggleHistoryBtn.textContent = "Toggle History"; // Change to "Hide History" when showing
-                renderPromptHistory(); // Re-render history if it was empty or changed
-            }
-        });
-
-        // --- Modified Prompt History Management ---
-        // promptHistory now stores objects
-        function addPromptToHistory(promptData) {
-            promptHistory.unshift(promptData); // Add object to the beginning
-            if (promptHistory.length > 10) { // Keep history limited
-                promptHistory.pop();
-            }
-            renderPromptHistory();
-        }
-
-        function renderPromptHistory() {
-            promptHistoryList.innerHTML = '';
-            promptHistory.forEach((pData, index) => {
-                const li = document.createElement("li");
-                // Create a brief summary for display
-                let summaryParts = [];
-                if (pData.actionBackground) summaryParts.push(pData.actionBackground);
-                if (pData.appearance) summaryParts.push(pData.appearance);
-                if (pData.selectedStyle) summaryParts.push(pData.selectedStyle);
-                
-                let summary = summaryParts.join(' / ');
-                if (!summary) summary = "Empty Prompt";
-
-                if (summary.length > 100) summary = summary.substring(0, 100) + '...';
-
-                li.textContent = summary;
-                li.title = generateCombinedPromptString(pData); // Full prompt string on hover
-                li.dataset.index = index; // Store index to retrieve full object
-                li.addEventListener('click', () => {
-                    if (confirm("Load this prompt into the inputs? This will overwrite current inputs.")) {
-                        loadPromptFromHistory(index);
-                    }
-                });
-                promptHistoryList.appendChild(li);
-            });
-        }
-
-        function loadPromptFromHistory(index) {
-            const pData = promptHistory[index];
-            if (pData) {
-                styleSelector.value = pData.selectedStyle || "";
-                styleDetailsPromptInput.value = pData.styleDetails || "";
-                appearancePromptInput.value = pData.appearance || "";
-                clothingPromptInput.value = pData.clothing || "";
-                actionBackgroundPromptInput.value = pData.actionBackground || "";
-                negativePromptInput.value = pData.customNegativePrompt || "";
-
-                // Reset all common negative checkboxes
-                commonNegativeCheckboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                });
-                // Check the ones that were saved
-                if (pData.commonNegativeSelections) {
-                    pData.commonNegativeSelections.forEach(savedValue => {
-                        // Find the actual checkbox element by its value
-                        document.querySelectorAll(`.common-negative-prompts input[type="checkbox"]`).forEach(checkbox => {
-                            if (checkbox.value === savedValue) {
-                                checkbox.checked = true;
-                            }
-                        });
-                    });
-                }
-                alert("Prompt loaded from history!");
-            }
-        }
-        // --- End Modified Prompt History Management ---
-
-        // Function to extract all current input values into an object (for history or API)
-        function getCurrentPromptData() {
-            const commonNegatives = Array.from(commonNegativeCheckboxes)
-                .filter(checkbox => checkbox.checked)
-                .map(checkbox => checkbox.value);
-
-            return {
-                selectedStyle: styleSelector.value,
-                styleDetails: styleDetailsPromptInput.value.trim(),
-                appearance: appearancePromptInput.value.trim(),
-                clothing: clothingPromptInput.value.trim(),
-                actionBackground: actionBackgroundPromptInput.value.trim(),
-                customNegativePrompt: negativePromptInput.value.trim(),
-                commonNegativeSelections: commonNegatives
-            };
-        }
-
-        // Helper function to convert a promptData object into the full prompt string
-        // This is needed for copying and for generating the actual prompt for the API
-        function generateCombinedPromptString(promptData) {
-            let positivePromptParts = [];
-            
-            // 1. Core style: From dropdown, or a good default if none selected.
-            if (promptData.selectedStyle) {
-                positivePromptParts.push(promptData.selectedStyle);
-            } else {
-                // Defaulting to a strong, high-quality Anime prompt if no style is explicitly chosen.
-                positivePromptParts.push("Anime style, highly detailed anime art, vibrant color palette, expressive large eyes, dynamic posing, intricate digital illustration, crisp lines, perfect anatomy, beautiful composition, trending on artstation, pixiv, masterpiece, best quality, cinematic, studio lighting, professional artwork, 4k, 8k, UHD, extreme detail, intricate textures, cel-shaded, light particles, smooth animation influence, high contrast, atmospheric lighting, clean rendering, smooth shading, polished artwork, crisp lines, perfect anatomy, soft glow");
-            }
-
-            // 2. General quality enhancers (should be compatible with most styles)
-            positivePromptParts.push("masterpiece, best quality, ultra-detailed, intricate details, stunning visual effects, professional artwork, 8k, UHD, sharp focus, vibrant colors, incredible detail, volumetric light, ray tracing, finely rendered, complex background, dynamic composition, perfect anatomy, clean rendering, smooth shading, polished artwork");
-
-            // 3. Additional style details from textarea
-            if (promptData.styleDetails) {
-                positivePromptParts.push(promptData.styleDetails);
-            }
-
-            // 4. Appearance details
-            if (promptData.appearance) {
-                positivePromptParts.push(`Appearance: ${promptData.appearance}`);
-            }
-            
-            // 5. Clothing & Accessories details
-            if (promptData.clothing) {
-                positivePromptParts.push(`Clothing & Accessories: ${promptData.clothing}`);
-            }
-            
-            // 6. Action & Background details
-            if (promptData.actionBackground) {
-                positivePromptParts.push(`Action & Background: ${promptData.actionBackground}`);
-            }
-
-            // Combine positive parts, filter out empty strings, and clean up.
-            let finalPositivePrompt = positivePromptParts.filter(part => part.trim() !== '').join(', ');
-            finalPositivePrompt = finalPositivePrompt.replace(/,\s*,/g, ',').replace(/\s{2,}/g, ' ').trim();
-            if (!finalPositivePrompt.endsWith('.')) finalPositivePrompt += '.';
-
-
-            // Negative prompt construction (removed Stable Diffusion specific embeddings)
-            let finalNegativePromptSet = new Set([
-                "lowres", "bad anatomy", "bad hands", "text", "error", "missing fingers", "extra digit", "fewer digits",
-                "cropped", "worst quality", "low quality", "normal quality", "jpeg artifacts", "signature", "watermark",
-                "username", "blurry", "mutated hands", "deformed face", "disfigured", "extra limbs", "fused fingers",
-                "too many fingers", "too few fingers", "malformed limbs", "poorly drawn hands", "poorly drawn face",
-                "ugly", "gross proportions", "extra arms", "extra legs", "extra heads", "bad eyes", "crossed eyes",
-                "asymmetrical eyes", "floating limbs", "disconnected limbs", "mismatched eyes", "body out of frame",
-                "tiling", "cloned face", "duplicate", "render error", "lighting error", "color error", "sketch",
-                "drawing", "painting", "cartoon", "3d render", "cgi", "unrealistic", "pixelated", "monochrome",
-                "grayscale", "boring colors", "dull colors", "desaturated", "irrelevant objects", "watermarks",
-                "poorly drawn feet", "extra feet", "deformed feet", "bad feet", "stretched proportions", "oversaturated",
-                "underexposed", "overexposed", "flat lighting", "simple background", "plain background", "empty background",
-                "bad perspective", "bad composition", "grainy", "noise", "distorted", "squint", "open mouth (if not desired)",
-                "bad hair", "messy hair", "bad clothing", "floating objects", "poor shadow", "broken weapon", "broken accessories",
-                "nsfw", "explicit", "sexual", "nude", "gore", "violent", "suggestive", "mature content", "provocative", "disgusting", "repulsive", "amateur", "beginner", "poorly rendered", "dark circles under eyes", "dark skin (if not intended)"
-            ]); 
-
-            if (promptData.commonNegativeSelections) {
-                promptData.commonNegativeSelections.forEach(value => finalNegativePromptSet.add(value));
-            }
-            if (promptData.customNegativePrompt) {
-                promptData.customNegativePrompt.split(',').map(v => v.trim()).forEach(item => finalNegativePromptSet.add(item));
-            }
-            
-            const finalNegativePrompt = Array.from(finalNegativePromptSet).join(', ');
-            return finalPositivePrompt.trim() + " Exclude: " + finalNegativePrompt.trim();
-        }
-
-
-        generateBtn.addEventListener("click", async () => {
-            const promptData = getCurrentPromptData(); // Get all current input values
-            const fullPromptString = generateCombinedPromptString(promptData); // Generate the string for the API
-            addPromptToHistory(promptData); // Store the object for history
-
-            if (!fullPromptString.trim()) {
-                alert("Please enter at least one detail in the prompt fields or select a style!");
-                return;
-            }
-
-            loadingDiv.style.display = "block";
-            errorMessageDiv.style.display = "none";
-            initialPlaceholder.style.display = "none"; // Hide showcase placeholder
-            generatedImageWrapper.innerHTML = ''; // Clear any previous generated image
-            generatedImageWrapper.style.display = "none"; // Hide generated wrapper
-            textResponseDiv.style.display = "none";
-            generatedTextSpan.textContent = "";
-            downloadBtn.style.display = "none"; // Hide download button until image is generated
-            currentWatermarkedImage = null; // Reset stored image
-
-            try {
-                // Get the appropriate API key based on currentAPIVersion
-                let api_to_use = currentAPIKey;
-                if (currentAPIVersion === "version3") {
-                    // Cycle through version 3 keys
-                    if (API_KEYS.version3.length === 0) {
-                        errorMessageDiv.textContent = "No API Key configured for Version 3. Please check the script.";
-                        errorMessageDiv.style.display = "block";
-                        initialPlaceholder.style.display = "block";
-                        return;
-                    }
-                    api_to_use = API_KEYS.version3[apiKeyIndex];
-                    apiKeyIndex = (apiKeyIndex + 1) % API_KEYS.version3.length; // Cycle to the next key
-                    currentAPIKey = api_to_use; // Update currentAPIKey for modal display for cycling keys
-                    updateCurrentSettingsDisplay();
-                }
-
-                if (!api_to_use || api_to_use.startsWith("YOUR_GEMINI_API_KEY")) {
-                    errorMessageDiv.textContent = "API Key not configured. Please replace 'YOUR_GEMINI_API_KEY_X' with your actual API key(s) in the script or choose a valid version in settings.";
-                    errorMessageDiv.style.display = "block";
-                    initialPlaceholder.style.display = "block"; // Show showcase on API key error
-                    return;
-                }
-
-                const requestBody = {
-                    contents: [
-                        {
-                            parts: [
-                                { text: fullPromptString.trim() } // Use the generated string here
-                            ]
-                        }
-                    ],
-                    generationConfig: {
-                        responseModalities: ["TEXT", "IMAGE"] 
-                    }
-                };
-
-                const response = await fetch(
-                    `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_ID}:generateContent?key=${api_to_use}`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(requestBody),
-                    }
-                );
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    console.error("API Error Response:", errorData);
-                    if (errorData.error && errorData.error.details && errorData.error.details[0] && errorData.error.details[0].message && errorData.error.details[0].message.includes("Safety setting was triggered")) {
-                        errorMessageDiv.textContent = `Your prompt was flagged by the AI's safety filter. Please modify your prompt.`;
-                    } else {
-                        errorMessageDiv.textContent = `Error generating image: ${errorData.error.message || response.statusText}`;
-                    }
-                    errorMessageDiv.style.display = "block";
-                    initialPlaceholder.style.display = "block"; // Show showcase on API errors
-                    return;
-                }
-
-                const data = await response.json();
-                console.log("Full API Response:", data);
-
-                let foundImage = false;
-                let foundText = false;
-
-                if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) {
-                    for (const part of data.candidates[0].content.parts) {
-                        if (part.inlineData) {
-                            const imageData = part.inlineData.data;
-                            const imageMimeType = part.inlineData.mimeType;
-                            
-                            const originalImageDataUrl = `data:${imageMimeType};base64,${imageData}`;
-
-                            const watermarkedImageDataUrl = await addWatermark(originalImageDataUrl, "Queendom AI"); // Changed watermark text
-                            currentWatermarkedImage = watermarkedImageDataUrl; // Store the watermarked image
-
-                            const img = document.createElement("img");
-                            img.src = watermarkedImageDataUrl;
-                            img.alt = fullPromptString; // Alt text from the full string
-                            generatedImageWrapper.appendChild(img);
-                            generatedImageWrapper.style.display = "block"; // Show wrapper for generated image
-                            foundImage = true;
-                            downloadBtn.style.display = "block"; // Show download button
-                        } else if (part.text) {
-                            generatedTextSpan.textContent = part.text;
-                            textResponseDiv.style.display = "block";
-                            foundText = true;
-                        }
-                    }
-
-                    if (!foundImage && !foundText) {
-                        errorMessageDiv.textContent = "Error: No image or text found in API response. No content might have been generated.";
-                        errorMessageDiv.style.display = "block";
-                        initialPlaceholder.style.display = "block"; // Show showcase if nothing was generated
-                    } else if (!foundImage) {
-                         errorMessageDiv.textContent = "Warning: No image was generated, only text was received.";
-                         errorMessageDiv.style.display = "block";
-                         initialPlaceholder.style.display = "block"; // Show showcase if only text generated
-                    } else if (!foundText) {
-                        errorMessageDiv.textContent = "Warning: No text was generated, only image was received.";
-                         errorMessageDiv.style.display = "block";
-                    }
-
-                } else {
-                    errorMessageDiv.textContent = "Error: No 'candidates' found in API response.";
-                    errorMessageDiv.style.display = "block";
-                    console.warn("Unexpected API response structure:", data);
-                    initialPlaceholder.style.display = "block"; // Show showcase on unexpected API response
-                }
-
-            } catch (error) {
-                console.error("Network or Fetch Error:", error);
-                errorMessageDiv.textContent = `An error occurred while calling the API: ${error.message}. Please check the console for details.`;
-                errorMessageDiv.style.display = "block";
-                initialPlaceholder.style.display = "block"; // Show showcase on network/fetch error
-            } finally {
-                loadingDiv.style.display = "none";
-            }
-        });
-
-        // Event listener for the download button
-        downloadBtn.addEventListener("click", () => {
-            if (currentWatermarkedImage) {
-                const a = document.createElement("a");
-                a.href = currentWatermarkedImage;
-                a.download = "generated_image_queendom_ai.png"; // Changed filename
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            } else {
-                alert("No image to download. Please generate an image first.");
-            }
-        });
-
-        // --- App Settings Modal Logic (Formerly Model Selection) ---
-        settingsBtn.addEventListener("click", () => {
-            appSettingsModal.style.display = "flex"; 
-            updateCurrentSettingsDisplay(); 
-        });
-
-        closeAppSettingsModalBtn.addEventListener("click", () => { 
-            appSettingsModal.style.display = "none";
-        });
-
-        saveAppSettingsBtn.addEventListener("click", () => { 
-            const selectedVersion = document.querySelector('input[name="api_version"]:checked').value;
-            currentAPIVersion = selectedVersion;
-
-            if (selectedVersion === "version1") {
-                currentAPIKey = API_KEYS.version1[0];
-            } else if (selectedVersion === "version2") {
-                currentAPIKey = API_KEYS.version2[0];
-            } else if (selectedVersion === "version3") {
-                if (API_KEYS.version3.length > 0) {
-                    currentAPIKey = API_KEYS.version3[0]; 
-                    apiKeyIndex = 0; 
-                } else {
-                    alert("No API Key configured for Version 3. Please check the script.");
-                    currentAPIKey = ""; 
-                }
-            }
-
-            updateCurrentSettingsDisplay();
-            appSettingsModal.style.display = "none";
-            alert(`Settings Saved! Current version: ${currentAPIVersion.replace("version", "Version ")}`);
-        });
-
-        // Close appSettingsModal if clicking outside
-        appSettingsModal.addEventListener("click", (e) => {
-            if (e.target === appSettingsModal) {
-                appSettingsModal.style.display = "none";
-            }
-        });
-
-        // --- What's New Modal Logic ---
-        openWhatsNewBtn.addEventListener("click", () => {
-            appSettingsModal.style.display = "none"; // Close settings modal
-            whatsNewModal.style.display = "flex"; // Open What's New modal
-        });
-
-        closeWhatsNewModalBtn.addEventListener("click", () => {
-            whatsNewModal.style.display = "none";
-        });
-
-        whatsNewModal.addEventListener("click", (e) => {
-            if (e.target === whatsNewModal) {
-                whatsNewModal.style.display = "none";
-            }
-        });
-
-        // Initial setup on page load
-        updateCurrentSettingsDisplay();
-    </script>
+    <script src="main.js"></script>
+   
 </body>
 </html>
